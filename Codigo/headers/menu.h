@@ -11,4 +11,4 @@ int mostrarMenuEstadoEvento();
 int mostrarMenuFacturas();
 int mostrarMenuEstadisticas();
 
-#endif // MENU_H
+#endif
