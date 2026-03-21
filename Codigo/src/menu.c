@@ -1,5 +1,15 @@
 #include <stdio.h>
+#include <string.h>
 #include "../headers/menu.h"
+
+static void limpiarBufferEntrada(void) {
+	int c;
+	while ((c = getchar()) != '\n' && c != EOF);
+}
+
+static void QuitarSaltoDeLinea(char *texto) {
+	texto[strcspn(texto, "\r\n")] = '\0';
+}
 
 int mostrarMenuPrincipal() {
 	printf("\n====================================\n");
@@ -113,4 +123,20 @@ int mostrarMenuEstadisticas() {
 	int opcion;
 	scanf("%d", &opcion);
 	return opcion;
+}
+
+void ObtenerDatosSitioManual(char *nombre, char *ubicacion, char *sitioWeb) {
+	limpiarBufferEntrada();
+
+	printf("\nNombre del sitio: ");
+	fgets(nombre, MAX_NOMBRE, stdin);
+	QuitarSaltoDeLinea(nombre);
+
+	printf("Ubicacion del sitio: ");
+	fgets(ubicacion, MAX_UBICACION, stdin);
+	QuitarSaltoDeLinea(ubicacion);
+
+	printf("Sitio web (opcional): ");
+	fgets(sitioWeb, MAX_URL, stdin);
+	QuitarSaltoDeLinea(sitioWeb);
 }
