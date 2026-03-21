@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "headers/menu.h"
+#include "../headers/menu.h"
 
 int mostrarMenuPrincipal() {
 	printf("\n====================================\n");
@@ -33,7 +33,7 @@ int mostrarMenuUsuarios() {
 	printf("\n######### MENU GENERALES #########\n");
 	printf("1. Consulta por evento\n");
 	printf("2. Compra de boletos\n");
-	printf("3. Salir\n");
+	printf("3. Volver\n");
 	printf("Seleccione una opcion: ");
 	int opcion;
 	scanf("%d", &opcion);
