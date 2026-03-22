@@ -1,6 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include "../headers/estructuras.h"
 #include "../headers/menu.h"
 #include "../headers/sitios.h"
+#include "../headers/archivos.h"
+#include "../headers/boletos.h"
+#include "../headers/eventos.h"
+#include "../headers/espacios.h"
+#include "../headers/facturas.h"
+#include "../headers/estadisticas.h"
 
 int main(void) {
 	int opcionPrincipal;
@@ -19,10 +27,11 @@ int main(void) {
 
 		switch (opcionPrincipal) {
 			case 1:
-				do {
-					opcionAdmin = mostrarMenuGestion();
+				if (loginAdmin()) {
+					do {
+						opcionAdmin = mostrarMenuGestion();
 
-					switch (opcionAdmin) {
+						switch (opcionAdmin) {
 						case 1:
 							do {
 								opcionSitios = mostrarMenuSitios();
@@ -178,7 +187,8 @@ int main(void) {
 							break;
 					}
 				} while (opcionAdmin != 7);
-				break;
+			}
+			break;
 
 			case 2:
 				do {

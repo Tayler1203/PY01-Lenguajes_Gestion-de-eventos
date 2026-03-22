@@ -18,7 +18,34 @@ void cargarDatos(AppData *app) {
 void guardarDatos(AppData *app) {
 }
 
-int verificarCredenciales(const char *usuario, const char *contrasena) {
+int verificarCredenciales(const char *usuario, const char *contraseña) {
+	FILE *archivo;
+	char linea[256];
+	char usuarioArchivo[MAX_NOMBRE];
+	char contraseñaArchivo[MAX_NOMBRE];
+	
+	archivo = fopen(ARCHIVO_CREDENCIALES, "r");
+	if (archivo == NULL) {
+		printf("ERROR: No se pudo abrir el archivo de credenciales.\n");
+		return 0;
+	}
+	
+	while (fgets(linea, sizeof(linea), archivo) != NULL) {
+		/* Eliminar salto de línea */
+		linea[strcspn(linea, "\r\n")] = '\0';
+		
+		/* Parsear formato: usuario,contraseña */
+		if (sscanf(linea, "%99[^,],%99s", usuarioArchivo, contraseñaArchivo) == 2) {
+			if (strcmp(usuarioArchivo, usuario) == 0 && 
+			    strcmp(contraseñaArchivo, contraseña) == 0) {
+				fclose(archivo);
+				return 1;
+			}
+		}
+	}
+	
+	fclose(archivo);
+	return 0;
 }
 int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *ubicacion, const char *sitioWeb) {
 	FILE *archivo;

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../headers/menu.h"
+#include "../headers/archivos.h"
 
 static void limpiarBufferEntrada(void) {
 	int c;
@@ -139,4 +140,40 @@ void ObtenerDatosSitioManual(char *nombre, char *ubicacion, char *sitioWeb) {
 	printf("Sitio web (opcional): ");
 	fgets(sitioWeb, MAX_URL, stdin);
 	QuitarSaltoDeLinea(sitioWeb);
+}
+
+int loginAdmin(void) {
+	char usuario[MAX_NOMBRE];
+	char contraseña[MAX_NOMBRE];
+	int intentos = 3;
+	
+	printf("\n====================================\n");
+	printf("   ACCESO AL MENU ADMINISTRATIVO\n");
+	printf("====================================\n");
+	
+	while (intentos > 0) {
+		limpiarBufferEntrada();
+		
+		printf("Usuario: ");
+		fgets(usuario, MAX_NOMBRE, stdin);
+		QuitarSaltoDeLinea(usuario);
+		
+		printf("Contraseña: ");
+		fgets(contraseña, MAX_NOMBRE, stdin);
+		QuitarSaltoDeLinea(contraseña);
+		
+		if (verificarCredenciales(usuario, contraseña)) {
+			printf("\n✓ ¡Acceso concedido! Bienvenido.\n\n");
+			return 1;
+		} else {
+			intentos--;
+			if (intentos > 0) {
+				printf("\n✗ Credenciales invalidas. Intentos restantes: %d\n\n", intentos);
+			} else {
+				printf("\n✗ Credenciales invalidas. Se agotaron los intentos.\n\n");
+			}
+		}
+	}
+	
+	return 0;
 }
