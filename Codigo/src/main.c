@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../headers/menu.h"
+#include "../headers/sitios.h"
 
 int main(void) {
 	int opcionPrincipal;
@@ -11,6 +12,7 @@ int main(void) {
 	int opcionEstadoEvento;
 	int opcionFacturas;
 	int opcionEstadisticas;
+	AppData app = {0};
 
 	do {
 		opcionPrincipal = mostrarMenuPrincipal();
@@ -33,16 +35,7 @@ int main(void) {
 										printf("\n[Listar sitios]\n");
 										break;
 									case 3:
-									{
-										char nombre[MAX_NOMBRE];
-										char ubicacion[MAX_UBICACION];
-										char sitioWeb[MAX_URL];
-
-										ObtenerDatosSitioManual(nombre, ubicacion, sitioWeb);
-										printf("Nombre: %s\n", nombre);
-										printf("Ubicacion: %s\n", ubicacion);
-										printf("Sitio web: %s\n", sitioWeb);
-									}
+										agregarSitioManual(&app);
 										break;
 									case 4:
 										printf("\n[Buscar sitio por nombre]\n");
