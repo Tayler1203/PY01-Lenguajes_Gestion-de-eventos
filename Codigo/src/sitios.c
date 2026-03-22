@@ -3,8 +3,22 @@
 #include <string.h>
 #include "../headers/sitios.h"
 #include "../headers/menu.h"
+#include "../headers/archivos.h"
 
 void listarSitios(const AppData *app) {
+	int i;
+	
+	if (app->cantidadSitios == 0) {
+		printf("\nNo hay sitios registrados.\n");
+		return;
+	}
+	
+	printf("\n--- Sitios Registrados ---\n");
+	for (i = 0; i < app->cantidadSitios; i++) {
+		printf("\n%d. %s\n", i + 1, app->sitios[i].nombre);
+		printf("   Ubicacion: %s\n", app->sitios[i].ubicacion);
+		printf("   Sitio web: %s\n", app->sitios[i].sitioWeb);
+	}
 }
 
 /*
@@ -34,7 +48,7 @@ void agregarSitioManual(AppData *app) {
 	/* Toma la nueva posición disponible para escribir el sitio. */
 	nuevoSitio = &app->sitios[app->cantidadSitios];
 
-	/* Copia segura de strings para evitar desbordamientos. */
+	/* Copia  del strings. */
 	strncpy(nuevoSitio->nombre, nombre, MAX_NOMBRE - 1);
 	nuevoSitio->nombre[MAX_NOMBRE - 1] = '\0';
 
@@ -47,10 +61,10 @@ void agregarSitioManual(AppData *app) {
 	nuevoSitio->cantidadSectores = 0;
 	nuevoSitio->sectores = NULL;
 
-	/* Actualiza el contador de sitios cargados en memoria. */
+	/* Actualiza el contador de sitios en memoria. */
 	app->cantidadSitios++;
+	GuardarSitiosEnArchivo(app, nuevoSitio->nombre, nuevoSitio->ubicacion, nuevoSitio->sitioWeb);
 
-	printf("\nSitio agregado en memoria correctamente.\n");
 	printf("Nombre: %s\n", nuevoSitio->nombre);
 	printf("Ubicacion: %s\n", nuevoSitio->ubicacion);
 	printf("Sitio web: %s\n", nuevoSitio->sitioWeb);
@@ -63,4 +77,8 @@ SitioEvento *buscarSitioPorNombre(const AppData *app, const char *nombre) {
 }
 
 SitioEvento *seleccionarSitio(const AppData *app) {
+}
+
+void ValidarNombreSitio(const char *nombre) {
+	
 }

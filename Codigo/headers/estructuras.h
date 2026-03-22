@@ -19,10 +19,10 @@
 #define MAX_ID_ASIENTO    10
 #define COSTO_SERVICIO  0.05
 
-#define ARCHIVO_CREDENCIALES  "data/credenciales.txt"
-#define ARCHIVO_SITIOS        "data/sitios.txt"
-#define ARCHIVO_EVENTOS       "data/eventos.txt"
-#define ARCHIVO_FACTURAS      "data/facturas.txt"
+#define ARCHIVO_CREDENCIALES  "../data/credenciales.txt"
+#define ARCHIVO_SITIOS        "../data/sitios.txt"
+#define ARCHIVO_EVENTOS       "../data/eventos.txt"
+#define ARCHIVO_FACTURAS      "../data/facturas.txt"
 
 /*
 *   EstadoAsiento

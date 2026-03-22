@@ -52,9 +52,18 @@ void guardarDatos(AppData *app);
  * Objetivo:    Leer usuario y contraseña del archivo y
  *              comparar con la entrada del usuario (RF-05).
  * Entrada:     usuario    - string ingresado por el usuario
- *              contraseña - string ingresado por el usuario
+ *              contrasena - string ingresado por el usuario
  * Salida:      1 si las credenciales son validas, 0 si no
  */
-int verificarCredenciales(const char *usuario, const char *contraseña);
+int verificarCredenciales(const char *usuario, const char *contrasena);
+
+/*
+ * GuardarSitiosEnArchivo
+ * Objetivo:    Agregar un sitio al archivo de sitios en formato CSV.
+ * Formato:     nombre,ubicacion,sitioWeb
+ * Entrada:     app, nombre, ubicacion, sitioWeb
+ * Salida:      1 si guarda correctamente, 0 si falla
+ */
+int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *ubicacion, const char *sitioWeb);
 
 #endif

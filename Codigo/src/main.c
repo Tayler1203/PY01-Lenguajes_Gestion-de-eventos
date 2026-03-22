@@ -32,7 +32,7 @@ int main(void) {
 										printf("\n[Carga en lote de sitios]\n");
 										break;
 									case 2:
-										printf("\n[Listar sitios]\n");
+										listarSitios(&app);
 										break;
 									case 3:
 										agregarSitioManual(&app);
