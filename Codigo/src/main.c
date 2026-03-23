@@ -21,6 +21,7 @@ int main(void) {
 	int opcionFacturas;
 	int opcionEstadisticas;
 	AppData app = {0};
+	cargarDatos(&app);
 
 	do {
 		opcionPrincipal = mostrarMenuPrincipal();
@@ -96,13 +97,13 @@ int main(void) {
 
 								switch (opcionEventos) {
 									case 1:
-										printf("\n[Crear evento]\n");
-										break;
-									case 2:
-										printf("\n[Ver eventos]\n");
-										break;
-									case 3:
-										printf("\n[Consultar evento]\n");
+									crearEvento(&app);
+									break;
+								case 2:
+									listarEventos(&app);
+									break;
+								case 3:
+									consultarEventosFuturos(&app);
 										break;
 									case 4:
 										printf("\nRegresando al menu administrativo...\n");
@@ -119,13 +120,13 @@ int main(void) {
 
 								switch (opcionEstadoEvento) {
 									case 1:
-										printf("\n[Seleccionar evento y ver resumen]\n");
+										mostrarResumenEvento(&app);
 										break;
 									case 2:
-										printf("\n[Ver recaudacion por sector]\n");
+										mostrarRecaudacionPorSector(&app);
 										break;
 									case 3:
-										printf("\n[Ver asientos por sector]\n");
+										mostrarAsientosPorSector(&app);
 										break;
 									case 4:
 										printf("\nRegresando al menu administrativo...\n");

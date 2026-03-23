@@ -66,4 +66,13 @@ int verificarCredenciales(const char *usuario, const char *contrasena);
  */
 int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *ubicacion, const char *sitioWeb);
 
+/*
+ * GuardarEventosEnArchivo
+ * Objetivo:    Agregar un evento al archivo de eventos en formato CSV.
+ * Formato:     nombre,productora,fecha,nombreSitio,cantidadSectores,monto1,monto2,...
+ * Entrada:     app, evento
+ * Salida:      1 si guarda correctamente, 0 si falla
+ */
+int GuardarEventosEnArchivo(const AppData *app, const Evento *evento);
+
 #endif

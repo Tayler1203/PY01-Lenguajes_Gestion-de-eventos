@@ -55,4 +55,37 @@ void mostrarDetalleEvento(const Evento *evento);
  */
 Evento *seleccionarEvento(const AppData *app);
 
+/*
+ * mostrarResumenEvento
+ * Objetivo:    Mostrar resumen completo del evento: nombre, productora, sitio, fecha,
+ *              montos por sector, recaudación por sector, estado de asientos.
+ * Entrada:     app - puntero a AppData (solo lectura)
+ * Salida:      void (imprime en consola)
+ */
+void mostrarResumenEvento(const AppData *app);
+
+/*
+ * mostrarRecaudacionPorSector
+ * Objetivo:    Mostrar recaudación por sector para un evento seleccionado.
+ * Entrada:     app - puntero a AppData (solo lectura)
+ * Salida:      void (imprime en consola)
+ */
+void mostrarRecaudacionPorSector(const AppData *app);
+
+/*
+ * mostrarAsientosPorSector
+ * Objetivo:    Mostrar estado de asientos por sector para un evento seleccionado.
+ * Entrada:     app - puntero a AppData (solo lectura)
+ * Salida:      void (imprime en consola)
+ */
+void mostrarAsientosPorSector(const AppData *app);
+
+/*
+ * listarEventos
+ * Objetivo:    Muestra todos los eventos cargados en memoria.
+ * Entrada:     app - puntero a AppData (solo lectura)
+ * Salida:      void (imprime en consola)
+ */
+void listarEventos(const AppData *app);
+
 #endif

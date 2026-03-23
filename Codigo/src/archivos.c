@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../headers/archivos.h"
+#include "../headers/sitios.h"
 
 void inicializarApp(AppData *app) {
 }
@@ -13,9 +14,20 @@ void asegurarDirectorioDatos() {
 }
 
 void cargarDatos(AppData *app) {
+	if (app == NULL) return;
+	app->cantidadSitios = 0;
+	app->sitios = NULL;
+	app->cantidadEventos = 0;
+	app->eventos = NULL;
+	app->cantidadFacturas = 0;
+	app->facturas = NULL;
+
+	cargarSitiosDesdeArchivo(app, ARCHIVO_SITIOS);
 }
 
 void guardarDatos(AppData *app) {
+	// Implementación pendiente: escribir sitios/eventos/facturas en archivos.
+	(void)app;
 }
 
 int verificarCredenciales(const char *usuario, const char *contraseña) {
@@ -57,6 +69,25 @@ int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *u
 	}
 
 	fprintf(archivo, "%s,%s,%s\n", nombre, ubicacion, sitioWeb);
+	fclose(archivo);
+	return 1;
+}
+
+int GuardarEventosEnArchivo(const AppData *app, const Evento *evento) {
+	FILE *archivo;
+	int i;
+
+	(void)app;
+	archivo = fopen(ARCHIVO_EVENTOS, "a");
+	if (archivo == NULL) {
+		return 0;
+	}
+
+	fprintf(archivo, "%s,%s,%s,%s,%d", evento->nombre, evento->productora, evento->fecha, evento->sitio->nombre, evento->cantidadSectores);
+	for (i = 0; i < evento->cantidadSectores; i++) {
+		fprintf(archivo, ",%.2f", evento->sectoresEvento[i].montoPorAsiento);
+	}
+	fprintf(archivo, "\n");
 	fclose(archivo);
 	return 1;
 }

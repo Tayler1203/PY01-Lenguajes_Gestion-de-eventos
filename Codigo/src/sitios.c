@@ -71,12 +71,83 @@ void agregarSitioManual(AppData *app) {
 }
 
 void cargarSitiosDesdeArchivo(AppData *app, const char *ruta) {
+	FILE *archivo = fopen(ruta, "r");
+	if (archivo == NULL) {
+		printf("Advertencia: no se pudo abrir el archivo de sitios %s.\n", ruta);
+		return;
+	}
+
+	char linea[512];
+	while (fgets(linea, sizeof(linea), archivo) != NULL) {
+		linea[strcspn(linea, "\r\n")] = '\0';
+
+		if (linea[0] == '\0') continue;
+
+		char nombre[MAX_NOMBRE];
+		char ubicacion[MAX_UBICACION];
+		char sitioWeb[MAX_URL];
+		int campos = sscanf(linea, "%99[^,],%149[^,],%149[^\n]", nombre, ubicacion, sitioWeb);
+		if (campos < 2) continue;
+
+		if (buscarSitioPorNombre(app, nombre) != NULL) continue;
+
+		SitioEvento *nuevoArreglo = realloc(app->sitios, (app->cantidadSitios + 1) * sizeof(SitioEvento));
+		if (nuevoArreglo == NULL) {
+			printf("Error: memoria insuficiente al cargar sitio %s.\n", nombre);
+			break;
+		}
+		app->sitios = nuevoArreglo;
+
+		SitioEvento *sitio = &app->sitios[app->cantidadSitios];
+		strncpy(sitio->nombre, nombre, MAX_NOMBRE - 1);
+		sitio->nombre[MAX_NOMBRE - 1] = '\0';
+		strncpy(sitio->ubicacion, ubicacion, MAX_UBICACION - 1);
+		sitio->ubicacion[MAX_UBICACION - 1] = '\0';
+
+		if (campos == 3) {
+			strncpy(sitio->sitioWeb, sitioWeb, MAX_URL - 1);
+			sitio->sitioWeb[MAX_URL - 1] = '\0';
+		} else {
+			sitio->sitioWeb[0] = '\0';
+		}
+
+		sitio->cantidadSectores = 0;
+		sitio->sectores = NULL;
+		app->cantidadSitios++;
+	}
+
+	fclose(archivo);
 }
 
 SitioEvento *buscarSitioPorNombre(const AppData *app, const char *nombre) {
+	for (int i = 0; i < app->cantidadSitios; i++) {
+		if (strcmp(app->sitios[i].nombre, nombre) == 0) {
+			return &app->sitios[i];
+		}
+	}
+	return NULL;
 }
 
 SitioEvento *seleccionarSitio(const AppData *app) {
+	if (app->cantidadSitios == 0) {
+		return NULL;
+	}
+
+	for (int i = 0; i < app->cantidadSitios; i++) {
+		printf("%d) %s (%s)\n", i + 1, app->sitios[i].nombre, app->sitios[i].ubicacion);
+	}
+
+	printf("Seleccione el sitio (0 para cancelar): ");
+	int opcion;
+	if (scanf("%d", &opcion) != 1) {
+		int c;
+		while ((c = getchar()) != '\n' && c != EOF);
+		return NULL;
+	}
+	if (opcion <= 0 || opcion > app->cantidadSitios) {
+		return NULL;
+	}
+	return &app->sitios[opcion - 1];
 }
 
 void ValidarNombreSitio(const char *nombre) {
