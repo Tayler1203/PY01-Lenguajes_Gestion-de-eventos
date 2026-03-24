@@ -20,35 +20,24 @@ void listarSitios(const AppData *app) {
 		printf("   Sitio web: %s\n", app->sitios[i].sitioWeb);
 	}
 }
-
-/*
- * Captura los datos desde el menú, reserva espacio para un nuevo sitio
- * en el arreglo dinámico y guarda el registro en memoria.
- */
 void agregarSitioManual(AppData *app) {
 	char nombre[MAX_NOMBRE];
 	char ubicacion[MAX_UBICACION];
 	char sitioWeb[MAX_URL];
 	SitioEvento *nuevoArreglo;
 	SitioEvento *nuevoSitio;
-	int i;
 
-	/* Solicita nombre, ubicación y sitio web por consola. */
 	ObtenerDatosSitioManual(nombre, ubicacion, sitioWeb);
 
-	/* Reserva un nuevo bloque y copia los sitios existentes. */
-	nuevoArreglo = (SitioEvento *)malloc((app->cantidadSitios + 1) * sizeof(SitioEvento));
-
-	for (i = 0; i < app->cantidadSitios; i++) {
-		nuevoArreglo[i] = app->sitios[i];
+	nuevoArreglo = realloc(app->sitios, (app->cantidadSitios + 1) * sizeof(SitioEvento));
+	if (nuevoArreglo == NULL) {
+		printf("No se pudo asignar memoria para el nuevo sitio.\n");
+		return;
 	}
 
-	free(app->sitios);
 	app->sitios = nuevoArreglo;
-	/* Toma la nueva posición disponible para escribir el sitio. */
 	nuevoSitio = &app->sitios[app->cantidadSitios];
 
-	/* Copia  del strings. */
 	strncpy(nuevoSitio->nombre, nombre, MAX_NOMBRE - 1);
 	nuevoSitio->nombre[MAX_NOMBRE - 1] = '\0';
 
@@ -61,7 +50,6 @@ void agregarSitioManual(AppData *app) {
 	nuevoSitio->cantidadSectores = 0;
 	nuevoSitio->sectores = NULL;
 
-	/* Actualiza el contador de sitios en memoria. */
 	app->cantidadSitios++;
 	GuardarSitiosEnArchivo(app, nuevoSitio->nombre, nuevoSitio->ubicacion, nuevoSitio->sitioWeb);
 

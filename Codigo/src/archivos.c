@@ -26,15 +26,14 @@ void cargarDatos(AppData *app) {
 }
 
 void guardarDatos(AppData *app) {
-	// Implementación pendiente: escribir sitios/eventos/facturas en archivos.
 	(void)app;
 }
 
-int verificarCredenciales(const char *usuario, const char *contraseña) {
+int verificarCredenciales(const char *usuario, const char *contrasena) {
 	FILE *archivo;
 	char linea[256];
 	char usuarioArchivo[MAX_NOMBRE];
-	char contraseñaArchivo[MAX_NOMBRE];
+	char contrasenaArchivo[MAX_NOMBRE];
 	
 	archivo = fopen(ARCHIVO_CREDENCIALES, "r");
 	if (archivo == NULL) {
@@ -43,13 +42,11 @@ int verificarCredenciales(const char *usuario, const char *contraseña) {
 	}
 	
 	while (fgets(linea, sizeof(linea), archivo) != NULL) {
-		/* Eliminar salto de línea */
 		linea[strcspn(linea, "\r\n")] = '\0';
 		
-		/* Parsear formato: usuario,contraseña */
-		if (sscanf(linea, "%99[^,],%99s", usuarioArchivo, contraseñaArchivo) == 2) {
+		if (sscanf(linea, "%99[^,],%99s", usuarioArchivo, contrasenaArchivo) == 2) {
 			if (strcmp(usuarioArchivo, usuario) == 0 && 
-			    strcmp(contraseñaArchivo, contraseña) == 0) {
+			    strcmp(contrasenaArchivo, contrasena) == 0) {
 				fclose(archivo);
 				return 1;
 			}

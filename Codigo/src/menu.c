@@ -144,7 +144,7 @@ void ObtenerDatosSitioManual(char *nombre, char *ubicacion, char *sitioWeb) {
 
 int loginAdmin(void) {
 	char usuario[MAX_NOMBRE];
-	char contraseña[MAX_NOMBRE];
+	char contrasena[MAX_NOMBRE];
 	int intentos = 3;
 	
 	printf("\n====================================\n");
@@ -159,10 +159,10 @@ int loginAdmin(void) {
 		QuitarSaltoDeLinea(usuario);
 		
 		printf("Contraseña: ");
-		fgets(contraseña, MAX_NOMBRE, stdin);
-		QuitarSaltoDeLinea(contraseña);
+		fgets(contrasena, MAX_NOMBRE, stdin);
+		QuitarSaltoDeLinea(contrasena);
 		
-		if (verificarCredenciales(usuario, contraseña)) {
+		if (verificarCredenciales(usuario, contrasena)) {
 			printf("\n✓ ¡Acceso concedido! Bienvenido.\n\n");
 			return 1;
 		} else {

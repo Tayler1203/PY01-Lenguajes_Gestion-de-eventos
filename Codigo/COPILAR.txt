@@ -1,2 +1,1 @@
-gcc main.c menu.c -o app.exe
 gcc main.c menu.c sitios.c archivos.c boletos.c eventos.c espacios.c facturas.c estadisticas.c -o app.exe

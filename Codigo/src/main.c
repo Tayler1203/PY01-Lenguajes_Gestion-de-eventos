@@ -76,9 +76,15 @@ int main(void) {
 									case 2:
 										printf("\n[Seleccionar sitio para administrar]\n");
 										break;
-									case 3:
-										printf("\n[Agregar sector a un sitio]\n");
+									case 3: {
+										SitioEvento *sitioSeleccionado = seleccionarSitio(&app);
+										if (sitioSeleccionado != NULL) {
+											agregarSector(sitioSeleccionado);
+										} else {
+											printf("\nNo se selecciono sitio.\n");
+										}
 										break;
+									}
 									case 4:
 										printf("\n[Reset de espacios por sitio]\n");
 										break;
