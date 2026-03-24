@@ -33,12 +33,11 @@ void mostrarSitiosConSectores(const AppData *app) {
 			Sector *sector = &sitio->sectores[j];
 			printf("  Sector %d: %s (Inicial: %c, Asientos: %d)\n", 
 				   j + 1, sector->nombre, sector->inicial, sector->cantidadEspacios);
-			// Opcional: mostrar IDs de asientos
-			// printf("    Asientos: ");
-			// for (k = 0; k < sector->cantidadEspacios; k++) {
-			//     printf("%s ", sector->asientos[k].id);
-			// }
-			// printf("\n");
+			 printf("    Asientos: ");
+			 for (k = 0; k < sector->cantidadEspacios; k++) {
+			     printf("%s ", sector->asientos[k].id);
+			 }
+			printf("\n");
 		}
 		if (sitio->cantidadSectores == 0) {
 			printf("  No hay sectores definidos.\n");
@@ -152,7 +151,6 @@ void gestionarEspaciosSitio(AppData *app) {
 				resetEspaciosSitio(sitioSeleccionado);
 				break;
 			case 3:
-				// Mostrar sectores del sitio seleccionado
 				printf("\nSectores de %s:\n", sitioSeleccionado->nombre);
 				for (int i = 0; i < sitioSeleccionado->cantidadSectores; i++) {
 					Sector *sector = &sitioSeleccionado->sectores[i];

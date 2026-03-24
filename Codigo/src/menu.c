@@ -16,8 +16,8 @@ int mostrarMenuPrincipal() {
 	printf("\n====================================\n");
 	printf("   SISTEMA DE GESTION DE EVENTOS\n");
 	printf("====================================\n");
-	printf("1. Administrativas\n");
-	printf("2. Generales\n");
+	printf("1. Administrativo\n");
+	printf("2. General\n");
 	printf("3. Salir\n");
 	printf("Seleccione una opcion: ");
 	int opcion;
@@ -27,11 +27,11 @@ int mostrarMenuPrincipal() {
 
 int mostrarMenuGestion() {
 	printf("\n######## MENU ADMINISTRATIVO ########\n");
-	printf("1. Gestion de Sitios de Eventos\n");
-	printf("2. Gestion de espacios sitio de eventos\n");
-	printf("3. Gestion de Eventos\n");
+	printf("1. Gestion de sitios de eventos\n");
+	printf("2. Gestion de espacios y sectores de sitios de eventos\n");
+	printf("3. Gestion de eventos\n");
 	printf("4. Estado de evento\n");
-	printf("5. Lista de facturas\n");
+	printf("5. Registro de facturas\n");
 	printf("6. Estadisticas\n");
 	printf("7. Volver\n");
 	printf("Seleccione una opcion: ");
@@ -41,7 +41,7 @@ int mostrarMenuGestion() {
 }
 
 int mostrarMenuUsuarios() {
-	printf("\n######### MENU GENERALES #########\n");
+	printf("\n######### MENU GENERAL #########\n");
 	printf("1. Consulta por evento\n");
 	printf("2. Compra de boletos\n");
 	printf("3. Volver\n");
@@ -53,8 +53,8 @@ int mostrarMenuUsuarios() {
 
 int mostrarMenuSitios() {
 	printf("\n#### GESTION DE SITIOS DE EVENTOS ####\n");
-	printf("1. Carga en lote desde archivo\n");
-	printf("2. Ver sitios\n");
+	printf("1. Cargar en lote desde archivo\n");
+	printf("2. Ver sitios de eventos\n");
 	printf("3. Registrar sitio manual\n");
 	printf("4. Buscar sitio por nombre\n");
 	printf("5. Modificar sitio\n");
@@ -95,7 +95,7 @@ int mostrarMenuEstadoEvento() {
 	printf("\n######## ESTADO DE EVENTO #########\n");
 	printf("1. Seleccionar evento y ver resumen\n");
 	printf("2. Ver recaudacion por sector\n");
-	printf("3. Ver asientos por sector (estado)\n");
+	printf("3. Ver estado de asientos por sector\n");
 	printf("4. Volver\n");
 	printf("Seleccione una opcion: ");
 	int opcion;

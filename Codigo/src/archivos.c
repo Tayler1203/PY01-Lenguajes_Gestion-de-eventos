@@ -99,7 +99,6 @@ int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *u
 void cargarSectoresDesdeArchivo(AppData *app) {
 	FILE *archivo = fopen(ARCHIVO_SECTORES, "r");
 	if (archivo == NULL) {
-		// No hay archivo de sectores, es normal
 		return;
 	}
 
@@ -184,7 +183,7 @@ void guardarSectoresEnArchivo(const AppData *app) {
 void cargarEstadosAsientos(AppData *app) {
 	FILE *archivo = fopen(ARCHIVO_ASIENTOS, "r");
 	if (archivo == NULL) {
-		return; // Archivo no existe, todos los asientos permanecen DISPONIBLE
+		return;
 	}
 
 	char linea[256];

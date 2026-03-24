@@ -74,7 +74,6 @@ void comprarBoletos(AppData *app) {
 		return;
 	}
 
-	// Seleccionar evento
 	printf("\n=== Eventos disponibles ===");
 	for (int i = 0; i < app->cantidadEventos; i++) {
 		printf("\n%d. %s - %s (%s)", i + 1, app->eventos[i].nombre,
@@ -94,20 +93,16 @@ void comprarBoletos(AppData *app) {
 	// Mostrar asientos disponibles
 	mostrarAsientosDisponibles(evento);
 
-	// Seleccionar asientos (solo estructura por ahora)
-	printf("\n*** Sistema de selección de asientos (estructura lista para completar) ***\n");
+	// Seleccionar asientos 
+	printf("\n*** Sistema de selección de asientos ***\n");
 	printf("Para la compra completa, implementar:\n");
 	printf("- Selección de asientos específicos\n");
 	printf("- Validación de disponibilidad\n");
 	printf("- Generación de factura\n\n");
 }
 
-void generarFactura(AppData *app, Evento *evento,
-                    Asiento **asientos, SectorEvento **sectores,
-                    int cantidad,
-                    const char *cedula, const char *nombre) {
-	// Estructura lista para implementar
-	printf("\n*** Generación de factura (estructura lista para completar) ***\n");
+void generarFactura(AppData *app, Evento *evento, Asiento **asientos, SectorEvento **sectores, int cantidad, const char *cedula, const char *nombre) {
+	printf("\n*** Generación de factura ***\n");
 	printf("Factura para: %s\n", nombre);
 	printf("Cédula: %s\n", cedula);
 	printf("Evento: %s\n", evento->nombre);
