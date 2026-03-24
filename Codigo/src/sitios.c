@@ -101,6 +101,7 @@ void cargarSitiosDesdeArchivo(AppData *app, const char *ruta) {
 
 		sitio->cantidadSectores = 0;
 		sitio->sectores = NULL;
+
 		app->cantidadSitios++;
 	}
 

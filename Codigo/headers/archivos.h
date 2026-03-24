@@ -75,4 +75,20 @@ int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *u
  */
 int GuardarEventosEnArchivo(const AppData *app, const Evento *evento);
 
+/*
+ * cargarSectoresDesdeArchivo
+ * Objetivo:    Leer sectores desde archivo y asignarlos a los sitios.
+ * Entrada:     app - puntero a AppData
+ * Salida:      void (modifica sitios por referencia)
+ */
+void cargarSectoresDesdeArchivo(AppData *app);
+
+/*
+ * guardarSectoresEnArchivo
+ * Objetivo:    Guardar todos los sectores de todos los sitios.
+ * Entrada:     app - puntero a AppData
+ * Salida:      void
+ */
+void guardarSectoresEnArchivo(const AppData *app);
+
 #endif

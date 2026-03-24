@@ -71,10 +71,10 @@ int main(void) {
 
 								switch (opcionEspacios) {
 									case 1:
-										printf("\n[Mostrar sitios con sectores y asientos]\n");
+										mostrarSitiosConSectores(&app);
 										break;
 									case 2:
-										printf("\n[Seleccionar sitio para administrar]\n");
+										gestionarEspaciosSitio(&app);
 										break;
 									case 3: {
 										SitioEvento *sitioSeleccionado = seleccionarSitio(&app);
@@ -85,9 +85,15 @@ int main(void) {
 										}
 										break;
 									}
-									case 4:
-										printf("\n[Reset de espacios por sitio]\n");
+									case 4: {
+										SitioEvento *sitioSeleccionado = seleccionarSitio(&app);
+										if (sitioSeleccionado != NULL) {
+											resetEspaciosSitio(sitioSeleccionado);
+										} else {
+											printf("\nNo se selecciono sitio.\n");
+										}
 										break;
+									}
 									case 5:
 										printf("\nRegresando al menu administrativo...\n");
 										break;
@@ -228,5 +234,7 @@ int main(void) {
 		}
 	} while (opcionPrincipal != 3);
 
+	guardarDatos(&app);
+	liberarApp(&app);
 	return 0;
 }

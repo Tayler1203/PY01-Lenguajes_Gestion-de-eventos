@@ -23,6 +23,7 @@
 #define ARCHIVO_SITIOS        "../data/sitios.txt"
 #define ARCHIVO_EVENTOS       "../data/eventos.txt"
 #define ARCHIVO_FACTURAS      "../data/facturas.txt"
+#define ARCHIVO_SECTORES      "../data/sectores.txt"
 
 /*
 *   EstadoAsiento
