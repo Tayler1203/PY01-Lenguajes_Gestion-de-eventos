@@ -11,7 +11,6 @@ void inicializarApp(AppData *app) {
 void liberarApp(AppData *app) {
 	if (app == NULL) return;
 	
-	// Liberar sitios y sus sectores
 	for (int i = 0; i < app->cantidadSitios; i++) {
 		SitioEvento *sitio = &app->sitios[i];
 		for (int j = 0; j < sitio->cantidadSectores; j++) {
@@ -21,13 +20,11 @@ void liberarApp(AppData *app) {
 	}
 	free(app->sitios);
 	
-	// Liberar eventos
 	for (int i = 0; i < app->cantidadEventos; i++) {
 		free(app->eventos[i].sectoresEvento);
 	}
 	free(app->eventos);
 	
-	// Liberar facturas
 	for (int i = 0; i < app->cantidadFacturas; i++) {
 		free(app->facturas[i].detalles);
 	}
@@ -48,15 +45,14 @@ void cargarDatos(AppData *app) {
 
 	cargarSitiosDesdeArchivo(app, ARCHIVO_SITIOS);
 	cargarSectoresDesdeArchivo(app);
+	cargarEstadosAsientos(app);
 }
 
 void guardarDatos(AppData *app) {
 	if (app == NULL) return;
 	
-	// Guardar sectores
 	guardarSectoresEnArchivo(app);
-	
-	// Aquí se pueden agregar guardado de eventos y facturas si es necesario
+	guardarEstadosAsientos(app);
 }
 
 int verificarCredenciales(const char *usuario, const char *contrasena) {
@@ -120,7 +116,7 @@ void cargarSectoresDesdeArchivo(AppData *app) {
 		nombreSitio[MAX_NOMBRE - 1] = '\0';
 
 		SitioEvento *sitio = buscarSitioPorNombre(app, nombreSitio);
-		if (sitio == NULL) continue; // Sitio no encontrado, ignorar
+		if (sitio == NULL) continue;
 
 		token = strtok(NULL, ",");
 		if (token == NULL) continue;
@@ -136,7 +132,6 @@ void cargarSectoresDesdeArchivo(AppData *app) {
 		if (token == NULL) continue;
 		int cantidadEspacios = atoi(token);
 
-		// Agregar sector al sitio
 		Sector *nuevoArreglo = realloc(sitio->sectores, (sitio->cantidadSectores + 1) * sizeof(Sector));
 		if (nuevoArreglo == NULL) {
 			printf("Error: memoria insuficiente para sector %s.\n", nombreSector);
@@ -150,7 +145,6 @@ void cargarSectoresDesdeArchivo(AppData *app) {
 		sector->inicial = inicial;
 		sector->cantidadEspacios = cantidadEspacios;
 
-		// Generar asientos
 		sector->asientos = malloc(cantidadEspacios * sizeof(Asiento));
 		if (sector->asientos == NULL) {
 			printf("Error: memoria insuficiente para asientos de sector %s.\n", nombreSector);
@@ -181,6 +175,72 @@ void guardarSectoresEnArchivo(const AppData *app) {
 		for (int j = 0; j < sitio->cantidadSectores; j++) {
 			Sector *sector = &sitio->sectores[j];
 			fprintf(archivo, "%s,%s,%c,%d\n", sitio->nombre, sector->nombre, sector->inicial, sector->cantidadEspacios);
+		}
+	}
+
+	fclose(archivo);
+}
+
+void cargarEstadosAsientos(AppData *app) {
+	FILE *archivo = fopen(ARCHIVO_ASIENTOS, "r");
+	if (archivo == NULL) {
+		return; // Archivo no existe, todos los asientos permanecen DISPONIBLE
+	}
+
+	char linea[256];
+	while (fgets(linea, sizeof(linea), archivo) != NULL) {
+		linea[strcspn(linea, "\r\n")] = '\0';
+		if (linea[0] == '\0') continue;
+
+		char nombreEvento[MAX_NOMBRE];
+		char asientoId[MAX_ID_ASIENTO];
+		int estado;
+
+		if (sscanf(linea, "%99[^,],%9[^,],%d", nombreEvento, asientoId, &estado) != 3) {
+			continue;
+		}
+
+		// Buscar el evento
+		Evento *evento = NULL;
+		for (int i = 0; i < app->cantidadEventos; i++) {
+			if (strcmp(app->eventos[i].nombre, nombreEvento) == 0) {
+				evento = &app->eventos[i];
+				break;
+			}
+		}
+
+		if (evento == NULL) continue;
+
+		// Buscar el asiento en los sectores del evento
+		for (int s = 0; s < evento->cantidadSectores; s++) {
+			Sector *sector = evento->sectoresEvento[s].sector;
+			for (int a = 0; a < sector->cantidadEspacios; a++) {
+				if (strcmp(sector->asientos[a].id, asientoId) == 0) {
+					sector->asientos[a].estado = (EstadoAsiento)estado;
+					goto siguiente_linea;
+				}
+			}
+		}
+		siguiente_linea:;
+	}
+
+	fclose(archivo);
+}
+
+void guardarEstadosAsientos(const AppData *app) {
+	FILE *archivo = fopen(ARCHIVO_ASIENTOS, "w");
+	if (archivo == NULL) {
+		printf("Error: no se pudo abrir archivo de asientos para guardar.\n");
+		return;
+	}
+
+	for (int e = 0; e < app->cantidadEventos; e++) {
+		Evento *evento = &app->eventos[e];
+		for (int s = 0; s < evento->cantidadSectores; s++) {
+			Sector *sector = evento->sectoresEvento[s].sector;
+			for (int a = 0; a < sector->cantidadEspacios; a++) {
+				fprintf(archivo, "%s,%s,%d\n", evento->nombre, sector->asientos[a].id, (int)sector->asientos[a].estado);
+			}
 		}
 	}
 

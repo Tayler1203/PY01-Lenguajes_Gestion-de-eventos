@@ -212,7 +212,7 @@ int main(void) {
 							printf("\n[Consulta por evento]\n");
 							break;
 						case 2:
-							printf("\n[Compra de boletos]\n");
+							comprarBoletos(&app);
 							break;
 						case 3:
 							printf("\nRegresando al menu principal...\n");
@@ -233,7 +233,6 @@ int main(void) {
 				break;
 		}
 	} while (opcionPrincipal != 3);
-
 	guardarDatos(&app);
 	liberarApp(&app);
 	return 0;
