@@ -4,10 +4,7 @@
 #include "../headers/eventos.h"
 #include "../headers/archivos.h"
 
-static void limpiarBufferEntrada(void) {
-	int c;
-	while ((c = getchar()) != '\n' && c != EOF);
-}
+
 
 static void quitarSaltoDeLinea(char *texto) {
 	texto[strcspn(texto, "\r\n")] = '\0';

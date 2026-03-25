@@ -37,6 +37,16 @@ void agregarSitioManual(AppData *app);
 void cargarSitiosDesdeArchivo(AppData *app, const char *ruta);
 
 /*
+ * cargarSitiosDesdeArchivoConRuta
+ * Objetivo:    Solicitar al usuario la ruta de un archivo CSV
+ *              e importar los sitios desde ese archivo.
+ * Entrada:     app - puntero a AppData
+ * Salida:      void (modifica app->sitios por referencia)
+ * Restriccion: Ignora registros cuyo nombre ya existe
+ */
+void cargarSitiosDesdeArchivoConRuta(AppData *app);
+
+/*
  * buscarSitioPorNombre
  * Objetivo:    Busqueda lineal de un sitio por nombre exacto.
  * Entrada:     app    - puntero a AppData

@@ -4,11 +4,9 @@
 #include "../headers/boletos.h"
 #include "../headers/eventos.h"
 #include "../headers/sitios.h"
+#include "../headers/archivos.h"
 
-static void limpiarBuffer(void) {
-	int c;
-	while ((c = getchar()) != '\n' && c != EOF);
-}
+
 
 int verificarDisponibilidad(Asiento **asientos, int cantidad) {
 	if (asientos == NULL || cantidad <= 0) {
@@ -82,11 +80,11 @@ void comprarBoletos(AppData *app) {
 	printf("\nSeleccione evento (0 para cancelar): ");
 	int opEvento;
 	if (scanf("%d", &opEvento) != 1 || opEvento < 1 || opEvento > app->cantidadEventos) {
-		limpiarBuffer();
+		limpiarBufferEntrada();
 		printf("\nOpción inválida. Compra cancelada.\n");
 		return;
 	}
-	limpiarBuffer();
+	limpiarBufferEntrada();
 
 	Evento *evento = &app->eventos[opEvento - 1];
 

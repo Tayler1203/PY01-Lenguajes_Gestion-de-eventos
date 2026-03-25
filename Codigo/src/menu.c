@@ -3,11 +3,6 @@
 #include "../headers/menu.h"
 #include "../headers/archivos.h"
 
-static void limpiarBufferEntrada(void) {
-	int c;
-	while ((c = getchar()) != '\n' && c != EOF);
-}
-
 static void QuitarSaltoDeLinea(char *texto) {
 	texto[strcspn(texto, "\r\n")] = '\0';
 }

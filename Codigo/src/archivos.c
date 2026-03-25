@@ -264,3 +264,8 @@ int GuardarEventosEnArchivo(const AppData *app, const Evento *evento) {
 	fclose(archivo);
 	return 1;
 }
+
+void limpiarBufferEntrada(void) {
+	int c;
+	while ((c = getchar()) != '\n' && c != EOF);
+}

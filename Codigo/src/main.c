@@ -39,7 +39,7 @@ int main(void) {
 
 								switch (opcionSitios) {
 									case 1:
-										printf("\n[Carga en lote de sitios]\n");
+										cargarSitiosDesdeArchivoConRuta(&app);
 										break;
 									case 2:
 										listarSitios(&app);

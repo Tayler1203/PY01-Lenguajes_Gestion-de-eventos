@@ -107,4 +107,13 @@ void cargarSectoresDesdeArchivo(AppData *app);
  */
 void guardarSectoresEnArchivo(const AppData *app);
 
+/*
+ * limpiarBufferEntrada
+ * Objetivo:    Limpiar el buffer de entrada stdin eliminando
+ *              caracteres residuales del ultima lectura.
+ * Entrada:     void
+ * Salida:      void
+ */
+void limpiarBufferEntrada(void);
+
 #endif

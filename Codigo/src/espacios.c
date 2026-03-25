@@ -4,13 +4,14 @@
 #include "../headers/espacios.h"
 #include "../headers/sitios.h"
 
-static void limpiarBufferEntrada(void) {
-	int c;
-	while ((c = getchar()) != '\n' && c != EOF);
-}
+
 
 static void quitarSaltoDeLinea(char *texto) {
 	texto[strcspn(texto, "\r\n")] = '\0';
+}
+static void limpiarBufferEntrada(void) {
+	int c;
+	while ((c = getchar()) != '\n' && c != EOF);
 }
 
 void mostrarSitiosConSectores(const AppData *app) {

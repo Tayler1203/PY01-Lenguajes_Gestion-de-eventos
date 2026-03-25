@@ -5,6 +5,10 @@
 #include "../headers/menu.h"
 #include "../headers/archivos.h"
 
+static void quitarSaltoDeLinea(char *texto) {
+	texto[strcspn(texto, "\r\n")] = '\0';
+}
+
 void listarSitios(const AppData *app) {
 	int i;
 	
@@ -67,7 +71,7 @@ void cargarSitiosDesdeArchivo(AppData *app, const char *ruta) {
 
 	char linea[512];
 	while (fgets(linea, sizeof(linea), archivo) != NULL) {
-		linea[strcspn(linea, "\r\n")] = '\0';
+		quitarSaltoDeLinea(linea);
 
 		if (linea[0] == '\0') continue;
 
@@ -129,14 +133,37 @@ SitioEvento *seleccionarSitio(const AppData *app) {
 	printf("Seleccione el sitio (0 para cancelar): ");
 	int opcion;
 	if (scanf("%d", &opcion) != 1) {
-		int c;
-		while ((c = getchar()) != '\n' && c != EOF);
+		limpiarBufferEntrada();
 		return NULL;
 	}
 	if (opcion <= 0 || opcion > app->cantidadSitios) {
 		return NULL;
 	}
 	return &app->sitios[opcion - 1];
+}
+
+void cargarSitiosDesdeArchivoConRuta(AppData *app) {
+	char ruta[600];
+	limpiarBufferEntrada();
+	
+	printf("\n--- Cargar Sitios desde Archivo ---\n");
+	printf("Ingrese la ruta del archivo: ");
+	
+	if (fgets(ruta, sizeof(ruta), stdin) == NULL) {
+		printf("Error al leer la ruta.\n");
+		return;
+	}
+	
+	quitarSaltoDeLinea(ruta);
+	
+	if (ruta[0] == '\0') {
+		printf("Error: debe ingresar una ruta valida.\n");
+		return;
+	}
+	
+	printf("Cargando sitios desde: %s\n", ruta);
+	cargarSitiosDesdeArchivo(app, ruta);
+	printf("Carga completada. Total de sitios: %d\n", app->cantidadSitios);
 }
 
 void ValidarNombreSitio(const char *nombre) {
