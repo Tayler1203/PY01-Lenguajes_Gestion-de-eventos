@@ -99,6 +99,8 @@ void guardarEstadosAsientos(const AppData *app);
  */
 void cargarSectoresDesdeArchivo(AppData *app);
 
+void cargarEventosDesdeArchivo(AppData *app);
+
 /*
  * guardarSectoresEnArchivo
  * Objetivo:    Guardar todos los sectores de todos los sitios.

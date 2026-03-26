@@ -11,20 +11,81 @@ static void quitarSaltoDeLinea(char *texto) {
 }
 
 void mostrarDetalleEvento(const Evento *evento) {
-	(void)evento;
+	if (evento == NULL) {
+		printf("Evento invalido.\n");
+		return;
+	}
+
+	printf("\n--- Detalle de evento: %s ---\n", evento->nombre);
+	printf("Productora : %s\n", evento->productora);
+	printf("Fecha      : %s\n", evento->fecha);
+	printf("Sitio      : %s\n", evento->sitio ? evento->sitio->nombre : "(sin sitio)");
+	printf("Sectores   : %d\n", evento->cantidadSectores);
+	for (int i = 0; i < evento->cantidadSectores; i++) {
+		SectorEvento *se = &evento->sectoresEvento[i];
+		Sector *s = se->sector;
+		if (s == NULL) continue;
+		printf("  %d. %s (inicial %c) - precio: %.2f - asientos: %d\n", 
+			  i + 1, s->nombre, s->inicial, se->montoPorAsiento, s->cantidadEspacios);
+	}
 }
 
 void listarEventos(const AppData *app) {
-	(void)app;
+	if (app == NULL) {
+		printf("Aplicacion no inicializada.\n");
+		return;
+	}
+
+	if (app->cantidadEventos == 0) {
+		printf("\nNo hay eventos registrados.\n");
+		return;
+	}
+
+	printf("\n--- Eventos Registrados ---\n");
+	for (int i = 0; i < app->cantidadEventos; i++) {
+		Evento *evento = &app->eventos[i];
+		printf("%d. %s | %s | %s | sitio: %s\n", 
+			  i + 1, evento->nombre, evento->productora, evento->fecha,
+			  evento->sitio ? evento->sitio->nombre : "(sin sitio)");
+	}
 }
 
 Evento *seleccionarEvento(const AppData *app) {
-	(void)app;
-	return NULL;
+	if (app == NULL || app->cantidadEventos == 0) {
+		printf("No hay eventos disponibles a seleccionar.\n");
+		return NULL;
+	}
+
+	for (int i = 0; i < app->cantidadEventos; i++) {
+		printf("%d) %s (%s)\n", i + 1, app->eventos[i].nombre, app->eventos[i].fecha);
+	}
+
+	printf("Seleccione un evento (0 para cancelar): ");
+	int opcion;
+	if (scanf("%d", &opcion) != 1 || opcion < 0 || opcion > app->cantidadEventos) {
+		limpiarBufferEntrada();
+		printf("Seleccion invalida.\n");
+		return NULL;
+	}
+	limpiarBufferEntrada();
+
+	if (opcion == 0) {
+		return NULL;
+	}
+
+	return &app->eventos[opcion - 1];
 }
 
 void mostrarEstadoEvento(const AppData *app) {
-	(void)app;
+	if (app == NULL || app->cantidadEventos == 0) {
+		printf("No hay eventos para mostrar estado.\n");
+		return;
+	}
+
+	Evento *evento = seleccionarEvento(app);
+	if (evento == NULL) return;
+
+	mostrarDetalleEvento(evento);
 }
 
 void mostrarResumenEvento(const AppData *app) {

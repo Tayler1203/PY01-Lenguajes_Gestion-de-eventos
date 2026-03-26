@@ -3,9 +3,26 @@
 #include <string.h>
 #include "../headers/archivos.h"
 #include "../headers/sitios.h"
-#include "../headers/sitios.h"
+
+#ifdef _WIN32
+#include <direct.h>
+#define MKDIR(path) _mkdir(path)
+#else
+#include <sys/stat.h>
+#include <sys/types.h>
+#define MKDIR(path) mkdir(path, 0755)
+#endif
 
 void inicializarApp(AppData *app) {
+    if (app == NULL) return;
+    app->sitios = NULL;
+    app->cantidadSitios = 0;
+    app->eventos = NULL;
+    app->cantidadEventos = 0;
+    app->facturas = NULL;
+    app->cantidadFacturas = 0;
+    app->contadorFacturas = 0;
+    app->sesionActiva = 0;
 }
 
 void liberarApp(AppData *app) {
@@ -32,19 +49,113 @@ void liberarApp(AppData *app) {
 }
 
 void asegurarDirectorioDatos() {
+    int ret = MKDIR("../data");
+    (void)ret; // Ignorar error si ya existe.
+}
+
+void cargarEventosDesdeArchivo(AppData *app) {
+    if (app == NULL) return;
+
+    FILE *archivo = fopen(ARCHIVO_EVENTOS, "r");
+    if (archivo == NULL) {
+        return;
+    }
+
+    char linea[2048];
+    while (fgets(linea, sizeof(linea), archivo) != NULL) {
+        linea[strcspn(linea, "\r\n")] = '\0';
+
+        if (linea[0] == '\0') continue;
+
+        char *token = strtok(linea, ",");
+        if (token == NULL) continue;
+
+        char nombre[MAX_NOMBRE];
+        char productora[MAX_NOMBRE];
+        char fecha[MAX_FECHA];
+        char nombreSitio[MAX_NOMBRE];
+        int cantidadSectores = 0;
+
+        strncpy(nombre, token, MAX_NOMBRE - 1);
+        nombre[MAX_NOMBRE - 1] = '\0';
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        strncpy(productora, token, MAX_NOMBRE - 1);
+        productora[MAX_NOMBRE - 1] = '\0';
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        strncpy(fecha, token, MAX_FECHA - 1);
+        fecha[MAX_FECHA - 1] = '\0';
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        strncpy(nombreSitio, token, MAX_NOMBRE - 1);
+        nombreSitio[MAX_NOMBRE - 1] = '\0';
+
+        token = strtok(NULL, ",");
+        if (token == NULL) continue;
+        cantidadSectores = atoi(token);
+
+        SitioEvento *sitio = buscarSitioPorNombre(app, nombreSitio);
+        if (sitio == NULL || sitio->cantidadSectores == 0) continue;
+
+        int sectoresAUsar = cantidadSectores;
+        if (sectoresAUsar > sitio->cantidadSectores) {
+            sectoresAUsar = sitio->cantidadSectores;
+        }
+
+        Evento *nuevoArreglo = realloc(app->eventos, (app->cantidadEventos + 1) * sizeof(Evento));
+        if (nuevoArreglo == NULL) {
+            printf("Error: memoria insuficiente al cargar evento %s.\n", nombre);
+            continue;
+        }
+
+        app->eventos = nuevoArreglo;
+        Evento *evento = &app->eventos[app->cantidadEventos];
+
+        strncpy(evento->nombre, nombre, MAX_NOMBRE - 1);
+        evento->nombre[MAX_NOMBRE - 1] = '\0';
+        strncpy(evento->productora, productora, MAX_NOMBRE - 1);
+        evento->productora[MAX_NOMBRE - 1] = '\0';
+        strncpy(evento->fecha, fecha, MAX_FECHA - 1);
+        evento->fecha[MAX_FECHA - 1] = '\0';
+
+        evento->sitio = sitio;
+        evento->cantidadSectores = sectoresAUsar;
+        evento->sectoresEvento = malloc(sectoresAUsar * sizeof(SectorEvento));
+
+        if (evento->sectoresEvento == NULL) {
+            printf("Error: memoria insuficiente para sectores de evento %s.\n", nombre);
+            continue;
+        }
+
+        for (int i = 0; i < sectoresAUsar; i++) {
+            evento->sectoresEvento[i].sector = &sitio->sectores[i];
+            token = strtok(NULL, ",");
+            if (token != NULL) {
+                evento->sectoresEvento[i].montoPorAsiento = atof(token);
+            } else {
+                evento->sectoresEvento[i].montoPorAsiento = 0.0;
+            }
+        }
+
+        app->cantidadEventos++;
+    }
+
+    fclose(archivo);
 }
 
 void cargarDatos(AppData *app) {
 	if (app == NULL) return;
-	app->cantidadSitios = 0;
-	app->sitios = NULL;
-	app->cantidadEventos = 0;
-	app->eventos = NULL;
-	app->cantidadFacturas = 0;
-	app->facturas = NULL;
+
+	inicializarApp(app);
+	asegurarDirectorioDatos();
 
 	cargarSitiosDesdeArchivo(app, ARCHIVO_SITIOS);
 	cargarSectoresDesdeArchivo(app);
+	cargarEventosDesdeArchivo(app);
 	cargarEstadosAsientos(app);
 }
 
