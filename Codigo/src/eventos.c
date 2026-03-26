@@ -88,22 +88,164 @@ void mostrarEstadoEvento(const AppData *app) {
 	mostrarDetalleEvento(evento);
 }
 
+static void calcularEstadoSector(const Evento *evento, int indexSector, int *vendidos, int *disponibles, double *recaudacion) {
+	*vendidos = *disponibles = 0;
+	*recaudacion = 0.0;
+	if (evento == NULL || indexSector < 0 || indexSector >= evento->cantidadSectores) return;
+
+	SectorEvento *sectEv = (SectorEvento *)&evento->sectoresEvento[indexSector];
+	Sector *sector = sectEv->sector;
+	for (int i = 0; i < sector->cantidadEspacios; i++) {
+		if (sector->asientos[i].estado == VENDIDO) {
+			(*vendidos)++;
+			*recaudacion += sectEv->montoPorAsiento;
+		} else {
+			(*disponibles)++;
+		}
+	}
+}
+
 void mostrarResumenEvento(const AppData *app) {
-	(void)app;
+	if (app == NULL || app->cantidadEventos == 0) {
+		printf("No hay eventos para mostrar resumen.\n");
+		return;
+	}
+
+	Evento *evento = seleccionarEvento(app);
+	if (evento == NULL) return;
+
+	printf("\n--- Resumen de evento: %s ---\n", evento->nombre);
+	printf("Productora: %s | Fecha: %s | Sitio: %s\n", evento->productora, evento->fecha, evento->sitio->nombre);
+
+	int totalVendidos = 0;
+	int totalDisponibles = 0;
+	double totalRecaudacion = 0.0;
+
+	for (int i = 0; i < evento->cantidadSectores; i++) {
+		int vendidos, disponibles;
+		double recaud;
+		calcularEstadoSector(evento, i, &vendidos, &disponibles, &recaud);
+		totalVendidos += vendidos;
+		totalDisponibles += disponibles;
+		totalRecaudacion += recaud;
+		Sector *sector = evento->sectoresEvento[i].sector;
+		printf("Sector %s: vendidos %d, disponibles %d, recaudacion %.2f\n", sector->nombre, vendidos, disponibles, recaud);
+	}
+
+	printf("\nTotales: vendidos %d, disponibles %d, recaudacion total %.2f\n", totalVendidos, totalDisponibles, totalRecaudacion);
 }
 
 void mostrarRecaudacionPorSector(const AppData *app) {
-	(void)app;
+	if (app == NULL || app->cantidadEventos == 0) {
+		printf("No hay eventos para mostrar recaudacion.\n");
+		return;
+	}
+
+	Evento *evento = seleccionarEvento(app);
+	if (evento == NULL) return;
+
+	printf("\n--- Recaudacion por sector para %s ---\n", evento->nombre);
+
+	for (int i = 0; i < evento->cantidadSectores; i++) {
+		int vendidos, disponibles;
+		double recaud;
+		calcularEstadoSector(evento, i, &vendidos, &disponibles, &recaud);
+		Sector *sector = evento->sectoresEvento[i].sector;
+		printf("Sector %s -> vendidos %d, disponibles %d, recaudacion %.2f\n", sector->nombre, vendidos, disponibles, recaud);
+	}
 }
 
 void mostrarAsientosPorSector(const AppData *app) {
-	(void)app;
+	if (app == NULL || app->cantidadEventos == 0) {
+		printf("No hay eventos para mostrar asientos.\n");
+		return;
+	}
+
+	Evento *evento = seleccionarEvento(app);
+	if (evento == NULL) return;
+
+	printf("\n--- Asientos por sector en %s ---\n", evento->nombre);
+
+	for (int i = 0; i < evento->cantidadSectores; i++) {
+		SectorEvento *sectorEvento = &evento->sectoresEvento[i];
+		Sector *sector = sectorEvento->sector;
+		printf("Sector %s (precio %.2f):\n", sector->nombre, sectorEvento->montoPorAsiento);
+		for (int j = 0; j < sector->cantidadEspacios; j++) {
+			printf("  %s -> %s\n", sector->asientos[j].id,
+				sector->asientos[j].estado == DISPONIBLE ? "DISPONIBLE" : "VENDIDO");
+		}
+	}
 }
 
 void consultarEventosFuturos(const AppData *app) {
-	(void)app;
+	if (app == NULL || app->cantidadEventos == 0) {
+		printf("No hay eventos registrados.\n");
+		return;
+	}
+
+	char fechaInicio[MAX_FECHA];
+	printf("\nIngrese fecha inicial (YYYY-MM-DD): ");
+	fgets(fechaInicio, sizeof(fechaInicio), stdin);
+	fechaInicio[strcspn(fechaInicio, "\r\n")] = '\0';
+	if (fechaInicio[0] == '\0') {
+		printf("Fecha invalida.\n");
+		return;
+	}
+
+	Evento **eventoOrdenado = malloc(app->cantidadEventos * sizeof(Evento *));
+	if (eventoOrdenado == NULL) {
+		printf("Error de memoria.\n");
+		return;
+	}
+	for (int i = 0; i < app->cantidadEventos; i++) {
+		eventoOrdenado[i] = &app->eventos[i];
+	}
+
+	for (int i = 0; i < app->cantidadEventos - 1; i++) {
+		for (int j = i + 1; j < app->cantidadEventos; j++) {
+			if (strcmp(eventoOrdenado[i]->fecha, eventoOrdenado[j]->fecha) > 0) {
+				Evento *tmp = eventoOrdenado[i];
+				eventoOrdenado[i] = eventoOrdenado[j];
+				eventoOrdenado[j] = tmp;
+			}
+		}
+	}
+
+	printf("\n--- Eventos a partir de %s ---\n", fechaInicio);
+	int encontrados = 0;
+	for (int i = 0; i < app->cantidadEventos; i++) {
+		if (strcmp(eventoOrdenado[i]->fecha, fechaInicio) >= 0) {
+			printf("%s | %s | %s | Sitio: %s\n", eventoOrdenado[i]->nombre, eventoOrdenado[i]->productora,
+				eventoOrdenado[i]->fecha, eventoOrdenado[i]->sitio->nombre);
+			encontrados++;
+		}
+	}
+
+	if (encontrados == 0) {
+		printf("No hay eventos futuros a partir de esa fecha.\n");
+	}
+
+	free(eventoOrdenado);
 }
 
+
+static Sector *copiarSector(const Sector *sectorOrigen) {
+	if (sectorOrigen == NULL) return NULL;
+
+	Sector *sectorCopia = malloc(sizeof(Sector));
+	if (sectorCopia == NULL) return NULL;
+
+	*sectorCopia = *sectorOrigen;
+	sectorCopia->asientos = malloc(sectorOrigen->cantidadEspacios * sizeof(Asiento));
+	if (sectorCopia->asientos == NULL) {
+		free(sectorCopia);
+		return NULL;
+	}
+	for (int i = 0; i < sectorOrigen->cantidadEspacios; i++) {
+		sectorCopia->asientos[i] = sectorOrigen->asientos[i];
+	}
+	return sectorCopia;
+}
 
 void crearEvento(AppData *app) {
 	if (app->cantidadSitios == 0) {
@@ -169,7 +311,7 @@ void crearEvento(AppData *app) {
 	nuevoEvento->productora[MAX_NOMBRE - 1] = '\0';
 	strncpy(nuevoEvento->fecha, fecha, MAX_FECHA - 1);
 	nuevoEvento->fecha[MAX_FECHA - 1] = '\0';
-	
+
 	nuevoEvento->sitio = sitioSeleccionado;
 	nuevoEvento->cantidadSectores = sitioSeleccionado->cantidadSectores;
 	nuevoEvento->sectoresEvento = malloc(nuevoEvento->cantidadSectores * sizeof(SectorEvento));
@@ -179,11 +321,25 @@ void crearEvento(AppData *app) {
 	}
 
 	for (int i = 0; i < nuevoEvento->cantidadSectores; i++) {
-		nuevoEvento->sectoresEvento[i].sector = &sitioSeleccionado->sectores[i];
-		printf("Monto por asiento para sector '%s': ", sitioSeleccionado->sectores[i].nombre);
+		Sector *sectorCopiado = copiarSector(&sitioSeleccionado->sectores[i]);
+		if (sectorCopiado == NULL) {
+			printf("No se pudo copiar sector %s para el evento.\n", sitioSeleccionado->sectores[i].nombre);
+			for (int j = 0; j < i; j++) {
+				free(nuevoEvento->sectoresEvento[j].sector->asientos);
+				free(nuevoEvento->sectoresEvento[j].sector);
+			}
+			free(nuevoEvento->sectoresEvento);
+			return;
+		}
+		nuevoEvento->sectoresEvento[i].sector = sectorCopiado;
+		printf("Monto por asiento para sector '%s': ", sectorCopiado->nombre);
 		if (scanf("%lf", &nuevoEvento->sectoresEvento[i].montoPorAsiento) != 1) {
 			printf("Monto invalido. Operacion abortada.\n");
 			limpiarBufferEntrada();
+			for (int j = 0; j <= i; j++) {
+				free(nuevoEvento->sectoresEvento[j].sector->asientos);
+				free(nuevoEvento->sectoresEvento[j].sector);
+			}
 			free(nuevoEvento->sectoresEvento);
 			return;
 		}

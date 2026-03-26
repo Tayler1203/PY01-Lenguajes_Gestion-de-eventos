@@ -38,7 +38,14 @@ void liberarApp(AppData *app) {
 	free(app->sitios);
 	
 	for (int i = 0; i < app->cantidadEventos; i++) {
-		free(app->eventos[i].sectoresEvento);
+		Evento *evento = &app->eventos[i];
+		for (int j = 0; j < evento->cantidadSectores; j++) {
+			if (evento->sectoresEvento[j].sector != NULL) {
+				free(evento->sectoresEvento[j].sector->asientos);
+				free(evento->sectoresEvento[j].sector);
+			}
+		}
+		free(evento->sectoresEvento);
 	}
 	free(app->eventos);
 	
@@ -132,7 +139,33 @@ void cargarEventosDesdeArchivo(AppData *app) {
         }
 
         for (int i = 0; i < sectoresAUsar; i++) {
-            evento->sectoresEvento[i].sector = &sitio->sectores[i];
+            Sector *sectorCopia = malloc(sizeof(Sector));
+            if (sectorCopia == NULL) {
+                printf("Error: memoria insuficiente para sector de evento %s.\n", nombre);
+                for (int j = 0; j < i; j++) {
+                    free(evento->sectoresEvento[j].sector->asientos);
+                    free(evento->sectoresEvento[j].sector);
+                }
+                free(evento->sectoresEvento);
+                continue;
+            }
+            *sectorCopia = sitio->sectores[i];
+            sectorCopia->asientos = malloc(sectorCopia->cantidadEspacios * sizeof(Asiento));
+            if (sectorCopia->asientos == NULL) {
+                printf("Error: memoria insuficiente para asientos de sector de evento %s.\n", nombre);
+                free(sectorCopia);
+                for (int j = 0; j < i; j++) {
+                    free(evento->sectoresEvento[j].sector->asientos);
+                    free(evento->sectoresEvento[j].sector);
+                }
+                free(evento->sectoresEvento);
+                continue;
+            }
+            for (int k = 0; k < sectorCopia->cantidadEspacios; k++) {
+                sectorCopia->asientos[k] = sitio->sectores[i].asientos[k];
+            }
+            evento->sectoresEvento[i].sector = sectorCopia;
+
             token = strtok(NULL, ",");
             if (token != NULL) {
                 evento->sectoresEvento[i].montoPorAsiento = atof(token);
