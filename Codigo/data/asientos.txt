@@ -1,8 +1,8 @@
-ConciertoBadBoniBeibi,A1,0
+ConciertoBadBoniBeibi,A1,1
 ConciertoBadBoniBeibi,A2,1
-ConciertoBadBoniBeibi,A3,0
-ConciertoBadBoniBeibi,A4,0
-ConciertoBadBoniBeibi,A5,0
+ConciertoBadBoniBeibi,A3,1
+ConciertoBadBoniBeibi,A4,1
+ConciertoBadBoniBeibi,A5,1
 ConciertoBadBoniBeibi,B1,0
 ConciertoBadBoniBeibi,B2,0
 ConciertoBadBoniBeibi,B3,0

@@ -40,6 +40,7 @@ static int esAsientoDuplicado(Asiento **seleccionados, int cantidad, const Asien
 	return 0;
 }
 
+// Deja lista la persistencia de facturas en archivo CSV pero no se invoca todavía
 static void guardarFacturaEnArchivo(const Factura *factura) {
 	if (factura == NULL) return;
 
@@ -49,7 +50,7 @@ static void guardarFacturaEnArchivo(const Factura *factura) {
 		return;
 	}
 
-	// Formato: id,fechaCompra,cedula,nombreComprador,nombreEvento,productora,nombreSitio,fechaEvento,cantidadAsientos,subtotal,costoServicio,total,detalle1|detalle2... 
+	// Formato: id,fechaCompra,cedula,nombreComprador,nombreEvento,productora,nombreSitio,fechaEvento,cantidadAsientos,subtotal,costoServicio,total,detalle1|detalle2...
 	// detalle: asientoId;sector;costo
 	fprintf(archivo, "%d,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,",
 		factura->id,
@@ -135,7 +136,91 @@ static void marcarAsientosVendidos(Asiento **asientos, int cantidad) {
 }
 
 void generarFactura(AppData *app, Evento *evento, Asiento **asientos, SectorEvento **sectores, int cantidad, const char *cedula, const char *nombre) {
-	// nada, Maikel chambea esto
+	if (app == NULL || evento == NULL || asientos == NULL || sectores == NULL || cantidad <= 0 || cedula == NULL || nombre == NULL) {
+		printf("No se pudo generar la factura: datos incompletos.\n");
+		return;
+	}
+
+	if (!verificarDisponibilidad(asientos, cantidad)) {
+		printf("Algunos asientos ya no estan disponibles. Compra cancelada.\n");
+		return;
+	}
+
+	Factura factura = {0};
+	factura.cantidadAsientos = cantidad;
+
+	time_t ahora = time(NULL);
+	struct tm *infoTiempo = localtime(&ahora);
+	if (infoTiempo != NULL) {
+		strftime(factura.fechaCompra, MAX_FECHA, "%Y-%m-%d", infoTiempo);
+	}
+
+	strncpy(factura.cedula, cedula, MAX_CEDULA - 1);
+	factura.cedula[MAX_CEDULA - 1] = '\0';
+	strncpy(factura.nombreComprador, nombre, MAX_NOMBRE - 1);
+	factura.nombreComprador[MAX_NOMBRE - 1] = '\0';
+	strncpy(factura.nombreEvento, evento->nombre, MAX_NOMBRE - 1);
+	factura.nombreEvento[MAX_NOMBRE - 1] = '\0';
+	strncpy(factura.productora, evento->productora, MAX_NOMBRE - 1);
+	factura.productora[MAX_NOMBRE - 1] = '\0';
+	strncpy(factura.nombreSitio, evento->sitio->nombre, MAX_NOMBRE - 1);
+	factura.nombreSitio[MAX_NOMBRE - 1] = '\0';
+	strncpy(factura.fechaEvento, evento->fecha, MAX_FECHA - 1);
+	factura.fechaEvento[MAX_FECHA - 1] = '\0';
+
+	factura.detalles = malloc(cantidad * sizeof(DetalleAsiento));
+	if (factura.detalles == NULL) {
+		printf("Error de memoria al generar factura. Compra cancelada.\n");
+		return;
+	}
+
+	double subtotal = 0.0;
+	for (int i = 0; i < cantidad; i++) {
+		DetalleAsiento *detalle = &factura.detalles[i];
+		const Asiento *asiento = asientos[i];
+		SectorEvento *sectorEv = sectores[i];
+		if (asiento == NULL || sectorEv == NULL || sectorEv->sector == NULL) {
+			printf("Datos de asiento invalidos. Compra cancelada.\n");
+			free(factura.detalles);
+			return;
+		}
+
+		strncpy(detalle->idAsiento, asiento->id, MAX_ID_ASIENTO - 1);
+		detalle->idAsiento[MAX_ID_ASIENTO - 1] = '\0';
+		strncpy(detalle->nombreSector, sectorEv->sector->nombre, MAX_NOMBRE - 1);
+		detalle->nombreSector[MAX_NOMBRE - 1] = '\0';
+		detalle->costo = sectorEv->montoPorAsiento;
+		subtotal += detalle->costo;
+	}
+
+	factura.subtotal = subtotal;
+	factura.costoServicio = subtotal * COSTO_SERVICIO;
+	factura.total = factura.subtotal + factura.costoServicio;
+
+	Factura *nuevoArreglo = realloc(app->facturas, (app->cantidadFacturas + 1) * sizeof(Factura));
+	if (nuevoArreglo == NULL) {
+		printf("No se pudo reservar espacio para la factura. Compra cancelada.\n");
+		free(factura.detalles);
+		return;
+	}
+
+	factura.id = app->contadorFacturas + 1;
+	app->facturas = nuevoArreglo;
+	app->facturas[app->cantidadFacturas] = factura;
+	app->cantidadFacturas++;
+	app->contadorFacturas = factura.id;
+
+	marcarAsientosVendidos(asientos, cantidad);
+
+	printf("\nCompra realizada exitosamente!\n");
+	printf("Factura #%d - Fecha compra: %s\n", factura.id, factura.fechaCompra);
+	printf("Cliente: %s (%s)\n", factura.nombreComprador, factura.cedula);
+	printf("Evento: %s | Productora: %s | Fecha: %s | Sitio: %s\n", factura.nombreEvento, factura.productora, factura.fechaEvento, factura.nombreSitio);
+	printf("Asientos comprados (%d): ", factura.cantidadAsientos);
+	for (int i = 0; i < factura.cantidadAsientos; i++) {
+		printf("%s%s", factura.detalles[i].idAsiento, (i < factura.cantidadAsientos - 1) ? ", " : "");
+	}
+	printf("\nSubtotal: $%.2f | Costo servicio (5%%): $%.2f | Total: $%.2f\n", factura.subtotal, factura.costoServicio, factura.total);
 }
 
 void comprarBoletos(AppData *app) {
@@ -280,22 +365,7 @@ void comprarBoletos(AppData *app) {
 		return;
 	}
 
-	// Marcar asientos como vendidos y guardar cambios
-	marcarAsientosVendidos(seleccionados, cantidadSeleccionados);
-	guardarEstadosAsientos(app);
-
-	// Mostrar confirmacion de compra
-	printf("\nCompra realizada exitosamente!\n");
-	printf("Cliente: %s (%s)\n", nombreComprador, cedula);
-	printf("Evento: %s\n", evento->nombre);
-	printf("Boletos comprados: ");
-	for (int i = 0; i < cantidadSeleccionados; i++) {
-		printf("%s", seleccionados[i]->id);
-		if (i < cantidadSeleccionados - 1) {
-			printf(", ");
-		}
-	}
-	printf("\n");
+	generarFactura(app, evento, seleccionados, sectoresSeleccionados, cantidadSeleccionados, cedula, nombreComprador);
 
 	free(seleccionados);
 	free(sectoresSeleccionados);
