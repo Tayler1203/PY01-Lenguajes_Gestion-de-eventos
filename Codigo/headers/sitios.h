@@ -65,4 +65,13 @@ SitioEvento *buscarSitioPorNombre(const AppData *app, const char *nombre);
  */
 SitioEvento *seleccionarSitio(const AppData *app);
 
+/*
+ * eliminarSitio
+ * Objetivo:    Mostrar lista numerada, pedir indice y eliminar
+ *              el sitio seleccionado de memoria y del archivo.
+ * Entrada:     app - puntero a AppData
+ * Salida:      void (modifica app->sitios y reescribe archivo)
+ */
+void eliminarSitio(AppData *app);
+
 #endif

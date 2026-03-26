@@ -54,7 +54,7 @@ int main(void) {
 										printf("\n[Modificar sitio]\n");
 										break;
 									case 6:
-										printf("\n[Eliminar sitio]\n");
+										eliminarSitio(&app);
 										break;
 									case 7:
 										printf("\nRegresando al menu administrativo...\n");

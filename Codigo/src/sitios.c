@@ -9,6 +9,21 @@ static void quitarSaltoDeLinea(char *texto) {
 	texto[strcspn(texto, "\r\n")] = '\0';
 }
 
+static int reescribirArchivoSitios(const AppData *app) {
+	FILE *archivo = fopen(ARCHIVO_SITIOS, "w");
+	if (archivo == NULL) {
+		printf("Error: no se pudo abrir el archivo de sitios para actualizar.\n");
+		return 0;
+	}
+
+	for (int i = 0; i < app->cantidadSitios; i++) {
+		fprintf(archivo, "%s,%s,%s\n", app->sitios[i].nombre, app->sitios[i].ubicacion, app->sitios[i].sitioWeb);
+	}
+
+	fclose(archivo);
+	return 1;
+}
+
 void listarSitios(const AppData *app) {
 	int i;
 	
@@ -143,7 +158,7 @@ SitioEvento *seleccionarSitio(const AppData *app) {
 }
 
 void cargarSitiosDesdeArchivoConRuta(AppData *app) {
-	char ruta[600];
+	char ruta[512];
 	limpiarBufferEntrada();
 	
 	printf("\n--- Cargar Sitios desde Archivo ---\n");
@@ -168,4 +183,61 @@ void cargarSitiosDesdeArchivoConRuta(AppData *app) {
 
 void ValidarNombreSitio(const char *nombre) {
 	
+}
+
+void eliminarSitio(AppData *app) {
+	if (app->cantidadSitios == 0) {
+		printf("\nNo hay sitios para eliminar.\n");
+		return;
+	}
+
+	printf("\n--- Eliminar sitio ---\n");
+	for (int i = 0; i < app->cantidadSitios; i++) {
+		printf("%d) %s (%s)\n", i + 1, app->sitios[i].nombre, app->sitios[i].ubicacion);
+	}
+
+	printf("Seleccione el sitio a eliminar (0 para cancelar): ");
+	int opcion;
+	if (scanf("%d", &opcion) != 1) {
+		limpiarBufferEntrada();
+		printf("Entrada invalida.\n");
+		return;
+	}
+
+	if (opcion == 0) {
+		printf("Operacion cancelada.\n");
+		return;
+	}
+
+	if (opcion < 1 || opcion > app->cantidadSitios) {
+		printf("Indice fuera de rango.\n");
+		return;
+	}
+
+	int indice = opcion - 1;
+	SitioEvento *sitio = &app->sitios[indice];
+
+	for (int j = 0; j < sitio->cantidadSectores; j++) {
+		free(sitio->sectores[j].asientos);
+	}
+	free(sitio->sectores);
+
+	for (int i = indice; i < app->cantidadSitios - 1; i++) {
+		app->sitios[i] = app->sitios[i + 1];
+	}
+
+	app->cantidadSitios--;
+
+	if (app->cantidadSitios == 0) {
+		free(app->sitios);
+		app->sitios = NULL;
+	} else {
+		SitioEvento *nuevoArreglo = realloc(app->sitios, app->cantidadSitios * sizeof(SitioEvento));
+		if (nuevoArreglo != NULL) {
+			app->sitios = nuevoArreglo;
+		}
+	}
+
+	reescribirArchivoSitios(app);
+	printf("Sitio eliminado exitosamente.\n");
 }
