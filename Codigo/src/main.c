@@ -232,7 +232,7 @@ int main(void) {
 
 					switch (opcionGeneral) {
 						case 1:
-							printf("\n[Consulta por evento]\n");
+							consultarEventosFuturos(&app);
 							break;
 						case 2:
 							comprarBoletos(&app);

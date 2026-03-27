@@ -183,6 +183,8 @@ void consultarEventosFuturos(const AppData *app) {
 		return;
 	}
 
+	limpiarBufferEntrada();
+
 	char fechaInicio[MAX_FECHA];
 	printf("\nIngrese fecha inicial (YYYY-MM-DD): ");
 	fgets(fechaInicio, sizeof(fechaInicio), stdin);
@@ -192,40 +194,85 @@ void consultarEventosFuturos(const AppData *app) {
 		return;
 	}
 
-	Evento **eventoOrdenado = malloc(app->cantidadEventos * sizeof(Evento *));
-	if (eventoOrdenado == NULL) {
+	Evento **eventosFiltrados = malloc(app->cantidadEventos * sizeof(Evento *));
+	if (eventosFiltrados == NULL) {
 		printf("Error de memoria.\n");
 		return;
 	}
+
+	int cantidadFiltrada = 0;
 	for (int i = 0; i < app->cantidadEventos; i++) {
-		eventoOrdenado[i] = &app->eventos[i];
+		if (strcmp(app->eventos[i].fecha, fechaInicio) >= 0) {
+			eventosFiltrados[cantidadFiltrada++] = &app->eventos[i];
+		}
 	}
 
-	for (int i = 0; i < app->cantidadEventos - 1; i++) {
-		for (int j = i + 1; j < app->cantidadEventos; j++) {
-			if (strcmp(eventoOrdenado[i]->fecha, eventoOrdenado[j]->fecha) > 0) {
-				Evento *tmp = eventoOrdenado[i];
-				eventoOrdenado[i] = eventoOrdenado[j];
-				eventoOrdenado[j] = tmp;
+	if (cantidadFiltrada == 0) {
+		printf("No hay eventos futuros a partir de esa fecha.\n");
+		free(eventosFiltrados);
+		return;
+	}
+
+	// ordenar por fecha ascendente
+	for (int i = 0; i < cantidadFiltrada - 1; i++) {
+		for (int j = i + 1; j < cantidadFiltrada; j++) {
+			if (strcmp(eventosFiltrados[i]->fecha, eventosFiltrados[j]->fecha) > 0) {
+				Evento *tmp = eventosFiltrados[i];
+				eventosFiltrados[i] = eventosFiltrados[j];
+				eventosFiltrados[j] = tmp;
 			}
 		}
 	}
 
 	printf("\n--- Eventos a partir de %s ---\n", fechaInicio);
-	int encontrados = 0;
-	for (int i = 0; i < app->cantidadEventos; i++) {
-		if (strcmp(eventoOrdenado[i]->fecha, fechaInicio) >= 0) {
-			printf("%s | %s | %s | Sitio: %s\n", eventoOrdenado[i]->nombre, eventoOrdenado[i]->productora,
-				eventoOrdenado[i]->fecha, eventoOrdenado[i]->sitio->nombre);
-			encontrados++;
-		}
+	for (int i = 0; i < cantidadFiltrada; i++) {
+		printf("%d. %s - %s\n", i + 1, eventosFiltrados[i]->nombre, eventosFiltrados[i]->fecha);
 	}
 
-	if (encontrados == 0) {
-		printf("No hay eventos futuros a partir de esa fecha.\n");
+	int seleccion = -1;
+	printf("\nSeleccione un evento (0 para cancelar): ");
+	if (scanf("%d", &seleccion) != 1 || seleccion < 0 || seleccion > cantidadFiltrada) {
+		printf("Seleccion invalida.\n");
+		limpiarBufferEntrada();
+		free(eventosFiltrados);
+		return;
+	}
+	limpiarBufferEntrada();
+
+	if (seleccion == 0) {
+		printf("Consulta cancelada.\n");
+		free(eventosFiltrados);
+		return;
 	}
 
-	free(eventoOrdenado);
+	Evento *evento = eventosFiltrados[seleccion - 1];
+	if (evento == NULL) {
+		printf("Evento no encontrado.\n");
+		free(eventosFiltrados);
+		return;
+	}
+
+	printf("\n--- Detalle de evento seleccionado ---\n");
+	printf("Nombre: %s\n", evento->nombre);
+	printf("Productora: %s\n", evento->productora);
+	printf("Sitio: %s\n", evento->sitio ? evento->sitio->nombre : "(sin sitio)");
+	printf("Fecha: %s\n", evento->fecha);
+
+	printf("\nSectores:\n");
+	for (int i = 0; i < evento->cantidadSectores; i++) {
+		SectorEvento *sectEv = &evento->sectoresEvento[i];
+		Sector *sector = sectEv->sector;
+		if (sector == NULL) continue;
+
+		int vendidos, disponibles;
+		double recaud;
+		calcularEstadoSector(evento, i, &vendidos, &disponibles, &recaud);
+
+		printf("  - %s | Precio: %.2f | Total: %d | Vendidos: %d | Disponibles: %d\n",
+			sector->nombre, sectEv->montoPorAsiento, sector->cantidadEspacios, vendidos, disponibles);
+	}
+
+	free(eventosFiltrados);
 }
 
 
