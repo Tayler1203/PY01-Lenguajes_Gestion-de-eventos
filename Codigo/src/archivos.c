@@ -242,6 +242,23 @@ int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *u
 	return 1;
 }
 
+int reescribirArchivoSitios(const AppData *app) {
+	if (app == NULL) return 0;
+
+	FILE *archivo = fopen(ARCHIVO_SITIOS, "w");
+	if (archivo == NULL) {
+		printf("Error: no se pudo abrir el archivo de sitios para actualizar.\n");
+		return 0;
+	}
+
+	for (int i = 0; i < app->cantidadSitios; i++) {
+		fprintf(archivo, "%s,%s,%s\n", app->sitios[i].nombre, app->sitios[i].ubicacion, app->sitios[i].sitioWeb);
+	}
+
+	fclose(archivo);
+	return 1;
+}
+
 void cargarSectoresDesdeArchivo(AppData *app) {
 	FILE *archivo = fopen(ARCHIVO_SECTORES, "r");
 	if (archivo == NULL) {

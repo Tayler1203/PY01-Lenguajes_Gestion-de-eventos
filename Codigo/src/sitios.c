@@ -9,21 +9,6 @@ static void quitarSaltoDeLinea(char *texto) {
 	texto[strcspn(texto, "\r\n")] = '\0';
 }
 
-static int reescribirArchivoSitios(const AppData *app) {
-	FILE *archivo = fopen(ARCHIVO_SITIOS, "w");
-	if (archivo == NULL) {
-		printf("Error: no se pudo abrir el archivo de sitios para actualizar.\n");
-		return 0;
-	}
-
-	for (int i = 0; i < app->cantidadSitios; i++) {
-		fprintf(archivo, "%s,%s,%s\n", app->sitios[i].nombre, app->sitios[i].ubicacion, app->sitios[i].sitioWeb);
-	}
-
-	fclose(archivo);
-	return 1;
-}
-
 void listarSitios(const AppData *app) {
 	int i;
 	

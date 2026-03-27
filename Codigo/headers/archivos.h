@@ -67,6 +67,14 @@ int verificarCredenciales(const char *usuario, const char *contrasena);
 int GuardarSitiosEnArchivo(const AppData *app, const char *nombre, const char *ubicacion, const char *sitioWeb);
 
 /*
+ * reescribirArchivoSitios
+ * Objetivo:    Sobrescribir el archivo de sitios con el contenido actual en memoria.
+ * Entrada:     app - puntero a AppData
+ * Salida:      1 si se pudo escribir, 0 en caso de error
+ */
+int reescribirArchivoSitios(const AppData *app);
+
+/*
  * GuardarEventosEnArchivo
  * Objetivo:    Agregar un evento al archivo de eventos en formato CSV.
  * Formato:     nombre,productora,fecha,nombreSitio,cantidadSectores,monto1,monto2,...
