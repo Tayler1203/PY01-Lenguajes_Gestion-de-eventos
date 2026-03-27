@@ -212,6 +212,8 @@ void generarFactura(AppData *app, Evento *evento, Asiento **asientos, SectorEven
 
 	marcarAsientosVendidos(asientos, cantidad);
 
+	agregarFacturaAlArchivo(&app->facturas[app->cantidadFacturas - 1]);
+
 	printf("\nCompra realizada exitosamente!\n");
 	printf("Factura #%d - Fecha compra: %s\n", factura.id, factura.fechaCompra);
 	printf("Cliente: %s (%s)\n", factura.nombreComprador, factura.cedula);

@@ -155,11 +155,34 @@ int main(void) {
 
 								switch (opcionFacturas) {
 									case 1:
-										printf("\n[Mostrar todas las facturas]\n");
+										listarFacturas(&app);
 										break;
-									case 2:
-										printf("\n[Ver detalle de factura]\n");
+									case 2: {
+										if (app.cantidadFacturas == 0) {
+											printf("\nNo hay facturas registradas.\n");
+										} else {
+											listarFacturas(&app);
+											printf("Ingrese el ID de la factura a ver: ");
+											int idFactura;
+											if (scanf("%d", &idFactura) == 1) {
+												int encontrada = 0;
+												for (int i = 0; i < app.cantidadFacturas; i++) {
+													if (app.facturas[i].id == idFactura) {
+														imprimirFactura(&app.facturas[i]);
+														encontrada = 1;
+														break;
+													}
+												}
+												if (!encontrada) {
+													printf("\nFactura #%d no existe.\n", idFactura);
+												}
+											} else {
+												printf("Entrada invalida.\n");
+												limpiarBufferEntrada();
+											}
+										}
 										break;
+									}
 									case 3:
 										printf("\nRegresando al menu administrativo...\n");
 										break;

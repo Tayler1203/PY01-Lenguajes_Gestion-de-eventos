@@ -99,6 +99,30 @@ void guardarEstadosAsientos(const AppData *app);
  */
 void cargarSectoresDesdeArchivo(AppData *app);
 
+/*
+ * cargarFacturasDesdeArchivo
+ * Objetivo:    Leer facturas desde archivo y cargarlas en memoria.
+ * Entrada:     app - puntero a AppData
+ * Salida:      void (modifica app->facturas y app->cantidadFacturas)
+ */
+void cargarFacturasDesdeArchivo(AppData *app);
+
+/*
+ * guardarFacturasEnArchivo
+ * Objetivo:    Escribir todas las facturas en memoria al archivo.
+ * Entrada:     app - puntero a AppData
+ * Salida:      void
+ */
+void guardarFacturasEnArchivo(const AppData *app);
+
+/*
+ * agregarFacturaAlArchivo
+ * Objetivo:    Agregar una factura individual al archivo (append mode).
+ * Entrada:     factura - puntero a la factura a guardar
+ * Salida:      void
+ */
+void agregarFacturaAlArchivo(const Factura *factura);
+
 void cargarEventosDesdeArchivo(AppData *app);
 
 /*
