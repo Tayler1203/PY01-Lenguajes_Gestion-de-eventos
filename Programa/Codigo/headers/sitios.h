@@ -67,11 +67,12 @@ SitioEvento *seleccionarSitio(const AppData *app);
 
 /*
  * ValidarNombreSitio
- * Objetivo:    Validar formato de nombre ingresado para un sitio.
- * Entrada:     nombre - string a validar
- * Salida:      nada (imprime mensajes/validaciones)
+ * Objetivo:    Validar que el nombre no sea NULL y que no exista otro sitio con ese nombre.
+ * Entrada:     app - puntero a AppData
+ *              nombre - string a validar
+ * Salida:      1 si es valido, 0 en caso contrario (imprime mensajes)
  */
-void ValidarNombreSitio(const char *nombre);
+int ValidarNombreSitio(const AppData *app, const char *nombre);
 
 /*
  * eliminarSitio

@@ -4,7 +4,7 @@ Semestre: I-2026
 
 Estudiantes:
 - Tayler Wynta Rodríguez - 2024143103
-- Maikel Flores Navarro - 2024000111
+- Maikel Flores Navarro  - 2024148346
 
 Proyecto: Proyecto Programado 1
 

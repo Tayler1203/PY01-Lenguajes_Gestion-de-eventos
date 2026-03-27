@@ -36,7 +36,7 @@ void liberarApp(AppData *app) {
 		free(sitio->sectores);
 	}
 	free(app->sitios);
-	
+
 	for (int i = 0; i < app->cantidadEventos; i++) {
 		Evento *evento = &app->eventos[i];
 		for (int j = 0; j < evento->cantidadSectores; j++) {
@@ -185,7 +185,6 @@ void cargarDatos(AppData *app) {
 
 	inicializarApp(app);
 	asegurarDirectorioDatos();
-
 	cargarSitiosDesdeArchivo(app, ARCHIVO_SITIOS);
 	cargarSectoresDesdeArchivo(app);
 	cargarEventosDesdeArchivo(app);
@@ -218,7 +217,7 @@ int verificarCredenciales(const char *usuario, const char *contrasena) {
 		
 		if (sscanf(linea, "%99[^,],%99s", usuarioArchivo, contrasenaArchivo) == 2) {
 			if (strcmp(usuarioArchivo, usuario) == 0 && 
-			    strcmp(contrasenaArchivo, contrasena) == 0) {
+				strcmp(contrasenaArchivo, contrasena) == 0) {
 				fclose(archivo);
 				return 1;
 			}

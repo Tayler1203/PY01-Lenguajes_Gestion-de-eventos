@@ -26,7 +26,7 @@ void mostrarDetalleEvento(const Evento *evento) {
 		Sector *s = se->sector;
 		if (s == NULL) continue;
 		printf("  %d. %s (inicial %c) - precio: %.2f - asientos: %d\n", 
-			  i + 1, s->nombre, s->inicial, se->montoPorAsiento, s->cantidadEspacios);
+			i + 1, s->nombre, s->inicial, se->montoPorAsiento, s->cantidadEspacios);
 	}
 }
 
@@ -45,8 +45,8 @@ void listarEventos(const AppData *app) {
 	for (int i = 0; i < app->cantidadEventos; i++) {
 		Evento *evento = &app->eventos[i];
 		printf("%d. %s | %s | %s | sitio: %s\n", 
-			  i + 1, evento->nombre, evento->productora, evento->fecha,
-			  evento->sitio ? evento->sitio->nombre : "(sin sitio)");
+			i + 1, evento->nombre, evento->productora, evento->fecha,
+			evento->sitio ? evento->sitio->nombre : "(sin sitio)");
 	}
 }
 

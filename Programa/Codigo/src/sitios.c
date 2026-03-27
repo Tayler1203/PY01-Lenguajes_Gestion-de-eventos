@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../headers/sitios.h"
 #include "../headers/menu.h"
 #include "../headers/archivos.h"
@@ -11,12 +12,12 @@ static void quitarSaltoDeLinea(char *texto) {
 
 void listarSitios(const AppData *app) {
 	int i;
-	
+
 	if (app->cantidadSitios == 0) {
 		printf("\nNo hay sitios registrados.\n");
 		return;
 	}
-	
+
 	printf("\n--- Sitios Registrados ---\n");
 	for (i = 0; i < app->cantidadSitios; i++) {
 		printf("\n%d. %s\n", i + 1, app->sitios[i].nombre);
@@ -24,6 +25,7 @@ void listarSitios(const AppData *app) {
 		printf("   Sitio web: %s\n", app->sitios[i].sitioWeb);
 	}
 }
+
 void agregarSitioManual(AppData *app) {
 	char nombre[MAX_NOMBRE];
 	char ubicacion[MAX_UBICACION];
@@ -32,6 +34,9 @@ void agregarSitioManual(AppData *app) {
 	SitioEvento *nuevoSitio;
 
 	ObtenerDatosSitioManual(nombre, ubicacion, sitioWeb);
+	if (!ValidarNombreSitio(app, nombre)) {
+		return;
+	}
 
 	nuevoArreglo = realloc(app->sitios, (app->cantidadSitios + 1) * sizeof(SitioEvento));
 	if (nuevoArreglo == NULL) {
@@ -145,29 +150,39 @@ SitioEvento *seleccionarSitio(const AppData *app) {
 void cargarSitiosDesdeArchivoConRuta(AppData *app) {
 	char ruta[512];
 	limpiarBufferEntrada();
-	
+
 	printf("\n--- Cargar Sitios desde Archivo ---\n");
 	printf("Ingrese la ruta del archivo: ");
-	
+
 	if (fgets(ruta, sizeof(ruta), stdin) == NULL) {
 		printf("Error al leer la ruta.\n");
 		return;
 	}
-	
+
 	quitarSaltoDeLinea(ruta);
-	
+
 	if (ruta[0] == '\0') {
 		printf("Error: debe ingresar una ruta valida.\n");
 		return;
 	}
-	
+
 	printf("Cargando sitios desde: %s\n", ruta);
 	cargarSitiosDesdeArchivo(app, ruta);
 	printf("Carga completada. Total de sitios: %d\n", app->cantidadSitios);
 }
 
-void ValidarNombreSitio(const char *nombre) {
-	
+int ValidarNombreSitio(const AppData *app, const char *nombre) {
+	if (nombre == NULL) {
+		printf("Error: nombre de sitio invalido.\n");
+		return 0;
+	}
+
+	if (buscarSitioPorNombre(app, nombre) != NULL) {
+		printf("Error: ya existe un sitio con ese nombre.\n");
+		return 0;
+	}
+
+	return 1;
 }
 
 void eliminarSitio(AppData *app) {

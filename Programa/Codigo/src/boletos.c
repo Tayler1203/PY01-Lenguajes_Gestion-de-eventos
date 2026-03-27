@@ -40,7 +40,6 @@ static int esAsientoDuplicado(Asiento **seleccionados, int cantidad, const Asien
 	return 0;
 }
 
-// Deja lista la persistencia de facturas en archivo CSV pero no se invoca todavía
 int verificarDisponibilidad(Asiento **asientos, int cantidad) {
 	if (asientos == NULL || cantidad <= 0) {
 		return 0;
