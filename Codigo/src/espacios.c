@@ -14,6 +14,21 @@ static void limpiarBufferEntrada(void) {
 	while ((c = getchar()) != '\n' && c != EOF);
 }
 
+static int generarAsientos(Sector *sector, int numAsientos) {
+	sector->asientos = (Asiento *)realloc(sector->asientos, numAsientos * sizeof(Asiento));
+	if (sector->asientos == NULL) {
+		printf("No se pudieron crear los asientos para el sector.\n");
+		return 0;
+	}
+
+	for (int j = 0; j < numAsientos; j++) {
+		snprintf(sector->asientos[j].id, MAX_ID_ASIENTO, "%c%d", sector->inicial, j + 1);
+		sector->asientos[j].estado = DISPONIBLE;
+		printf("- %s\n", sector->asientos[j].id);
+	}
+	return 1;
+}
+
 void mostrarSitiosConSectores(const AppData *app) {
 	int i, j, k;
 	
@@ -33,11 +48,11 @@ void mostrarSitiosConSectores(const AppData *app) {
 		for (j = 0; j < sitio->cantidadSectores; j++) {
 			Sector *sector = &sitio->sectores[j];
 			printf("  Sector %d: %s (Inicial: %c, Asientos: %d)\n", 
-				   j + 1, sector->nombre, sector->inicial, sector->cantidadEspacios);
-			 printf("    Asientos: ");
-			 for (k = 0; k < sector->cantidadEspacios; k++) {
-			     printf("%s ", sector->asientos[k].id);
-			 }
+				j + 1, sector->nombre, sector->inicial, sector->cantidadEspacios);
+			printf("    Asientos: ");
+			for (k = 0; k < sector->cantidadEspacios; k++) {
+				printf("%s ", sector->asientos[k].id);
+			}
 			printf("\n");
 		}
 		if (sitio->cantidadSectores == 0) {
@@ -67,6 +82,10 @@ void agregarSector(SitioEvento *sitio) {
 
 	int totalSectores = sitio->cantidadSectores + cantidadNuevosSectores;
 	Sector *nuevoArreglo = realloc(sitio->sectores, totalSectores * sizeof(Sector));
+	if (nuevoArreglo == NULL) {
+		printf("No hay memoria para agregar sectores.\n");
+		return;
+	}
 
 	sitio->sectores = nuevoArreglo;
 	limpiarBufferEntrada();
@@ -74,7 +93,6 @@ void agregarSector(SitioEvento *sitio) {
 	for (int i = 0; i < cantidadNuevosSectores; i++) {
 		Sector *sector = &sitio->sectores[sitio->cantidadSectores + i];
 		int numAsientos;
-		int resultadoScanf;
 
 		printf("Nombre del sector %d: ", i + 1);
 		fgets(sector->nombre, MAX_NOMBRE, stdin);
@@ -85,7 +103,7 @@ void agregarSector(SitioEvento *sitio) {
 		limpiarBufferEntrada();
 
 		if (numAsientos <= 0) {
-			printf("Cantidad invalida. Se creara el sector scon 1 asiento.\n");
+			printf("Cantidad invalida. Se creara el sector con 1 asiento.\n");
 			numAsientos = 1;
 		}
 
@@ -94,14 +112,8 @@ void agregarSector(SitioEvento *sitio) {
 		sector->asientos = NULL;
 
 		if (numAsientos > 0) {
-			sector->asientos = (Asiento *)realloc(sector->asientos, numAsientos * sizeof(Asiento));
-
 			printf("Lista de asientos para %s (%c):\n", sector->nombre, sector->inicial);
-			for (int j = 0; j < numAsientos; j++) {
-				snprintf(sector->asientos[j].id, MAX_ID_ASIENTO, "%c%d", sector->inicial, j + 1);
-				sector->asientos[j].estado = DISPONIBLE;
-				printf("- %s\n", sector->asientos[j].id);
-			}
+			generarAsientos(sector, numAsientos);
 		}
 	}
 
