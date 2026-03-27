@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../headers/estructuras.h"
 #include "../headers/menu.h"
 #include "../headers/sitios.h"
@@ -47,23 +48,36 @@ int main(void) {
 									case 3:
 										agregarSitioManual(&app);
 										break;
-									case 4:
-										printf("\n[Buscar sitio por nombre]\n");
+									case 4: {
+										char nombreBusqueda[MAX_NOMBRE];
+										printf("\nIngrese nombre del sitio a buscar: ");
+										limpiarBufferEntrada();
+										fgets(nombreBusqueda, MAX_NOMBRE, stdin);
+										nombreBusqueda[strcspn(nombreBusqueda, "\r\n")] = '\0';
+										
+										SitioEvento *sitioEncontrado = buscarSitioPorNombre(&app, nombreBusqueda);
+										if (sitioEncontrado != NULL) {
+											printf("\n[SITIO ENCONTRADO]\n");
+											printf("Nombre: %s\n", sitioEncontrado->nombre);
+											printf("Ubicacion: %s\n", sitioEncontrado->ubicacion);
+											printf("Sitio Web: %s\n", sitioEncontrado->sitioWeb);
+											printf("Cantidad de sectores: %d\n", sitioEncontrado->cantidadSectores);
+										} else {
+											printf("\nSitio '%s' no encontrado.\n", nombreBusqueda);
+										}
 										break;
+									}
 									case 5:
-										printf("\n[Modificar sitio]\n");
-										break;
-									case 6:
 										eliminarSitio(&app);
 										break;
-									case 7:
+									case 6:
 										printf("\nRegresando al menu administrativo...\n");
 										break;
 									default:
 										printf("\nOpcion no valida. Intente de nuevo.\n");
 										break;
 								}
-							} while (opcionSitios != 7);
+							} while (opcionSitios != 6);
 							break;
 						case 2:
 							do {

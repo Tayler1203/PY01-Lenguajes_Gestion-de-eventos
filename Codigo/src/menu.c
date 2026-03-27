@@ -52,9 +52,8 @@ int mostrarMenuSitios() {
 	printf("2. Ver sitios de eventos\n");
 	printf("3. Registrar sitio manual\n");
 	printf("4. Buscar sitio por nombre\n");
-	printf("5. Modificar sitio\n");
-	printf("6. Eliminar sitio\n");
-	printf("7. Volver\n");
+	printf("5. Eliminar sitio\n");
+	printf("6. Volver\n");
 	printf("Seleccione una opcion: ");
 	int opcion;
 	scanf("%d", &opcion);
