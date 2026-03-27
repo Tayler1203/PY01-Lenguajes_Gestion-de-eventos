@@ -213,7 +213,6 @@ void consultarEventosFuturos(const AppData *app) {
 		return;
 	}
 
-	// ordenar por fecha ascendente
 	for (int i = 0; i < cantidadFiltrada - 1; i++) {
 		for (int j = i + 1; j < cantidadFiltrada; j++) {
 			if (strcmp(eventosFiltrados[i]->fecha, eventosFiltrados[j]->fecha) > 0) {

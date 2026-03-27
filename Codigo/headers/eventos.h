@@ -31,8 +31,7 @@ void mostrarEstadoEvento(const AppData *app);
  *              cuya fecha sea mayor o igual, ordenados
  *              ascendentemente.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
- */
+ * Salida:      void (imprime en consola) */
 void consultarEventosFuturos(const AppData *app);
 
 /*

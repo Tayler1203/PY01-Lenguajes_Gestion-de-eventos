@@ -345,7 +345,6 @@ void cargarEstadosAsientos(AppData *app) {
 			continue;
 		}
 
-		// Buscar el evento
 		Evento *evento = NULL;
 		for (int i = 0; i < app->cantidadEventos; i++) {
 			if (strcmp(app->eventos[i].nombre, nombreEvento) == 0) {
@@ -356,7 +355,6 @@ void cargarEstadosAsientos(AppData *app) {
 
 		if (evento == NULL) continue;
 
-		// Buscar el asiento en los sectores del evento
 		for (int s = 0; s < evento->cantidadSectores; s++) {
 			Sector *sector = evento->sectoresEvento[s].sector;
 			for (int a = 0; a < sector->cantidadEspacios; a++) {
@@ -427,8 +425,6 @@ void guardarFacturasEnArchivo(const AppData *app) {
 
 	for (int f = 0; f < app->cantidadFacturas; f++) {
 		const Factura *factura = &app->facturas[f];
-		// Formato: id,fechaCompra,cedula,nombreComprador,nombreEvento,productora,nombreSitio,fechaEvento,cantidadAsientos,subtotal,costoServicio,total,detalle1|detalle2...
-		// detalle: asientoId;sector;costo
 		fprintf(archivo, "%d,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,",
 			factura->id,
 			factura->fechaCompra,
@@ -466,8 +462,6 @@ void agregarFacturaAlArchivo(const Factura *factura) {
 		return;
 	}
 
-	// Formato: id,fechaCompra,cedula,nombreComprador,nombreEvento,productora,nombreSitio,fechaEvento,cantidadAsientos,subtotal,costoServicio,total,detalle1|detalle2...
-	// detalle: asientoId;sector;costo
 	fprintf(archivo, "%d,%s,%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,",
 		factura->id,
 		factura->fechaCompra,
@@ -508,108 +502,75 @@ void cargarFacturasDesdeArchivo(AppData *app) {
 
 		if (linea[0] == '\0') continue;
 
-		// Parsear: id,fechaCompra,cedula,nombreComprador,nombreEvento,productora,nombreSitio,fechaEvento,cantidadAsientos,subtotal,costoServicio,total,detalles
 		Factura factura = {0};
-		
-		// Buscar la última coma antes de los detalles (separamos la parte de detalles)
-		char *detallesStart = strchr(linea, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
-		detallesStart = strchr(detallesStart + 1, ',');
-		if (detallesStart == NULL) continue;
 
-		char *detallesCopia = malloc(strlen(detallesStart) + 1);
-		if (detallesCopia == NULL) continue;
-		strcpy(detallesCopia, detallesStart);
+		char *ptr = linea;
+		for (int campo = 0; campo < 12; campo++) {
+			char *coma = strchr(ptr, ',');
+			if (coma == NULL) {
+				ptr = NULL;
+				break;
+			}
+			*coma = '\0';
 
-		char lineaCopia[4096];
-		strncpy(lineaCopia, linea, sizeof(lineaCopia) - 1);
-		lineaCopia[sizeof(lineaCopia) - 1] = '\0';
-
-		// Reemplazar el último separador de comas con un separador temporal para los detalles
-		char *temp = strchr(lineaCopia, ',');
-		for (int i = 0; i < 11 && temp != NULL; i++) {
-			temp = strchr(temp + 1, ',');
-		}
-		if (temp != NULL) {
-			*temp = '|';
-		}
-
-		// Parsear los primeros 12 campos
-		char *token = strtok(lineaCopia, ",");
-		int campo = 0;
-		
-		while (token != NULL && campo < 12) {
 			if (campo == 0) {
-				factura.id = atoi(token);
+				factura.id = atoi(ptr);
 			} else if (campo == 1) {
-				strncpy(factura.fechaCompra, token, MAX_FECHA - 1);
+				strncpy(factura.fechaCompra, ptr, MAX_FECHA - 1);
 				factura.fechaCompra[MAX_FECHA - 1] = '\0';
 			} else if (campo == 2) {
-				strncpy(factura.cedula, token, MAX_CEDULA - 1);
+				strncpy(factura.cedula, ptr, MAX_CEDULA - 1);
 				factura.cedula[MAX_CEDULA - 1] = '\0';
 			} else if (campo == 3) {
-				strncpy(factura.nombreComprador, token, MAX_NOMBRE - 1);
+				strncpy(factura.nombreComprador, ptr, MAX_NOMBRE - 1);
 				factura.nombreComprador[MAX_NOMBRE - 1] = '\0';
 			} else if (campo == 4) {
-				strncpy(factura.nombreEvento, token, MAX_NOMBRE - 1);
+				strncpy(factura.nombreEvento, ptr, MAX_NOMBRE - 1);
 				factura.nombreEvento[MAX_NOMBRE - 1] = '\0';
 			} else if (campo == 5) {
-				strncpy(factura.productora, token, MAX_NOMBRE - 1);
+				strncpy(factura.productora, ptr, MAX_NOMBRE - 1);
 				factura.productora[MAX_NOMBRE - 1] = '\0';
 			} else if (campo == 6) {
-				strncpy(factura.nombreSitio, token, MAX_NOMBRE - 1);
+				strncpy(factura.nombreSitio, ptr, MAX_NOMBRE - 1);
 				factura.nombreSitio[MAX_NOMBRE - 1] = '\0';
 			} else if (campo == 7) {
-				strncpy(factura.fechaEvento, token, MAX_FECHA - 1);
+				strncpy(factura.fechaEvento, ptr, MAX_FECHA - 1);
 				factura.fechaEvento[MAX_FECHA - 1] = '\0';
 			} else if (campo == 8) {
-				factura.cantidadAsientos = atoi(token);
+				factura.cantidadAsientos = atoi(ptr);
 			} else if (campo == 9) {
-				factura.subtotal = atof(token);
+				factura.subtotal = atof(ptr);
 			} else if (campo == 10) {
-				factura.costoServicio = atof(token);
+				factura.costoServicio = atof(ptr);
 			} else if (campo == 11) {
-				factura.total = atof(token);
+				factura.total = atof(ptr);
 			}
-			
-			token = strtok(NULL, ",");
-			campo++;
+
+			ptr = coma + 1;
 		}
 
-		// Parsear los detalles (asiento|asiento|...)
-		if (factura.cantidadAsientos > 0) {
+		if (ptr == NULL) {
+			continue;
+		}
+
+		if (factura.cantidadAsientos <= 0) {
+			factura.detalles = NULL;
+		} else {
+			char *detallesCopia = malloc(strlen(ptr) + 1);
+			if (detallesCopia == NULL) {
+				continue;
+			}
+			strcpy(detallesCopia, ptr);
+
 			factura.detalles = malloc(factura.cantidadAsientos * sizeof(DetalleAsiento));
 			if (factura.detalles == NULL) {
 				free(detallesCopia);
 				continue;
 			}
 
-			char *detalleToken = strtok(detallesCopia, "|");
 			int detalleIdx = 0;
-
+			char *detalleToken = strtok(detallesCopia, "|");
 			while (detalleToken != NULL && detalleIdx < factura.cantidadAsientos) {
-				DetalleAsiento *detalle = &factura.detalles[detalleIdx];
-				
 				char detalleTemp[512];
 				strncpy(detalleTemp, detalleToken, sizeof(detalleTemp) - 1);
 				detalleTemp[sizeof(detalleTemp) - 1] = '\0';
@@ -619,27 +580,27 @@ void cargarFacturasDesdeArchivo(AppData *app) {
 				char *costoStr = strtok(NULL, ";");
 
 				if (asientoId != NULL) {
-					strncpy(detalle->idAsiento, asientoId, MAX_ID_ASIENTO - 1);
-					detalle->idAsiento[MAX_ID_ASIENTO - 1] = '\0';
+					strncpy(factura.detalles[detalleIdx].idAsiento, asientoId, MAX_ID_ASIENTO - 1);
+					factura.detalles[detalleIdx].idAsiento[MAX_ID_ASIENTO - 1] = '\0';
 				}
 				if (nombreSector != NULL) {
-					strncpy(detalle->nombreSector, nombreSector, MAX_NOMBRE - 1);
-					detalle->nombreSector[MAX_NOMBRE - 1] = '\0';
+					strncpy(factura.detalles[detalleIdx].nombreSector, nombreSector, MAX_NOMBRE - 1);
+					factura.detalles[detalleIdx].nombreSector[MAX_NOMBRE - 1] = '\0';
 				}
 				if (costoStr != NULL) {
-					detalle->costo = atof(costoStr);
+					factura.detalles[detalleIdx].costo = atof(costoStr);
 				}
 
 				detalleIdx++;
 				detalleToken = strtok(NULL, "|");
 			}
-		}
 
-		// Agregar factura a app
+			free(detallesCopia);
+		}
+	
 		Factura *nuevoArreglo = realloc(app->facturas, (app->cantidadFacturas + 1) * sizeof(Factura));
 		if (nuevoArreglo == NULL) {
 			free(factura.detalles);
-			free(detallesCopia);
 			continue;
 		}
 
@@ -650,8 +611,6 @@ void cargarFacturasDesdeArchivo(AppData *app) {
 		if (factura.id > app->contadorFacturas) {
 			app->contadorFacturas = factura.id;
 		}
-
-		free(detallesCopia);
 	}
 
 	fclose(archivo);

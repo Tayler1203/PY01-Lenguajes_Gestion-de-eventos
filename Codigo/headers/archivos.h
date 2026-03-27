@@ -50,7 +50,7 @@ void guardarDatos(AppData *app);
 /*
  * verificarCredenciales
  * Objetivo:    Leer usuario y contraseña del archivo y
- *              comparar con la entrada del usuario (RF-05).
+ *              comparar con la entrada del usuario.
  * Entrada:     usuario    - string ingresado por el usuario
  *              contrasena - string ingresado por el usuario
  * Salida:      1 si las credenciales son validas, 0 si no
@@ -117,7 +117,7 @@ void guardarFacturasEnArchivo(const AppData *app);
 
 /*
  * agregarFacturaAlArchivo
- * Objetivo:    Agregar una factura individual al archivo (append mode).
+ * Objetivo:    Agregar una factura individual al archivo (append).
  * Entrada:     factura - puntero a la factura a guardar
  * Salida:      void
  */
