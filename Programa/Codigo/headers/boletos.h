@@ -11,7 +11,7 @@
  *              solicitar cedula y nombre, generar y mostrar
  *              factura.
  * Entrada:     app - puntero a AppData
- * Salida:      void (agrega factura a app->facturas y marca
+ * Salida:      nada (agrega factura a app->facturas y marca
  *              asientos como VENDIDO)
  */
 void comprarBoletos(AppData *app);

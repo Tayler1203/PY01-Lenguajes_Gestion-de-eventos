@@ -8,7 +8,7 @@
  * Objetivo:    Agrupar eventos por mes-anio, ordenar de mayor
  *              a menor y mostrar el top 3 (RF-18).
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void topMesesConMasEventos(const AppData *app);
 
@@ -18,7 +18,7 @@ void topMesesConMasEventos(const AppData *app);
  *              facturas, ordenar de mayor a menor y mostrar
  *              el top 3 (RF-19).
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void topProductorasPorRecaudacion(const AppData *app);
 
@@ -28,7 +28,7 @@ void topProductorasPorRecaudacion(const AppData *app);
  *              monto total recaudado; mostrar ordenado de mayor
  *              a menor recaudacion (RF-20).
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void reporteSitiosPorRecaudacion(const AppData *app);
 

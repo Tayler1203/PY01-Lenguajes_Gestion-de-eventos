@@ -21,7 +21,7 @@ void crearEvento(AppData *app);
  *              monto recaudado por sector y estado de cada
  *              asiento.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void mostrarEstadoEvento(const AppData *app);
 
@@ -31,7 +31,7 @@ void mostrarEstadoEvento(const AppData *app);
  *              cuya fecha sea mayor o igual, ordenados
  *              ascendentemente.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola) */
+ * Salida:      nada (imprime en consola) */
 void consultarEventosFuturos(const AppData *app);
 
 /*
@@ -40,7 +40,7 @@ void consultarEventosFuturos(const AppData *app);
  *              sitio web, fecha, monto por sector y cantidad de
  *              asientos disponibles por sector.
  * Entrada:     evento - puntero al Evento a mostrar
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void mostrarDetalleEvento(const Evento *evento);
 
@@ -59,7 +59,7 @@ Evento *seleccionarEvento(const AppData *app);
  * Objetivo:    Mostrar resumen completo del evento: nombre, productora, sitio, fecha,
  *              montos por sector, recaudación por sector, estado de asientos.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void mostrarResumenEvento(const AppData *app);
 
@@ -67,7 +67,7 @@ void mostrarResumenEvento(const AppData *app);
  * mostrarRecaudacionPorSector
  * Objetivo:    Mostrar recaudación por sector para un evento seleccionado.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void mostrarRecaudacionPorSector(const AppData *app);
 
@@ -75,7 +75,7 @@ void mostrarRecaudacionPorSector(const AppData *app);
  * mostrarAsientosPorSector
  * Objetivo:    Mostrar estado de asientos por sector para un evento seleccionado.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void mostrarAsientosPorSector(const AppData *app);
 
@@ -83,7 +83,7 @@ void mostrarAsientosPorSector(const AppData *app);
  * listarEventos
  * Objetivo:    Muestra todos los eventos cargados en memoria.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void listarEventos(const AppData *app);
 

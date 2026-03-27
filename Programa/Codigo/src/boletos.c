@@ -5,7 +5,7 @@
 #include "../headers/eventos.h"
 #include "../headers/sitios.h"
 #include "../headers/archivos.h"
-#include "../headers/facturacion.h"
+#include "../headers/facturas.h"
 
 static void limpiarCadena(char *texto) {
 	if (texto == NULL) return;

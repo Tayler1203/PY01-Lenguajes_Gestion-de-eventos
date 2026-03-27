@@ -8,7 +8,7 @@
  * Objetivo:    Mostrar todos los sitios registrados con su
  *              informacion basica.
  * Entrada:     app - puntero a AppData (solo lectura)
- * Salida:      void (imprime en consola)
+ * Salida:      nada (imprime en consola)
  */
 void listarSitios(const AppData *app);
 
@@ -18,7 +18,7 @@ void listarSitios(const AppData *app);
  *              consola y agregar el sitio si el nombre no
  *              existe.
  * Entrada:     app - puntero a AppData
- * Salida:      void (modifica app->sitios por referencia)
+ * Salida:      nada (modifica app->sitios por referencia)
  * Restriccion: El nombre es unico; rechaza duplicados
  */
 void agregarSitioManual(AppData *app);
@@ -31,7 +31,7 @@ void agregarSitioManual(AppData *app);
  *              El campo sitioWeb es opcional.
  * Entrada:     app  - puntero a AppData
  *              ruta - ruta del archivo a leer
- * Salida:      void (modifica app->sitios por referencia)
+ * Salida:      nada (modifica app->sitios por referencia)
  * Restriccion: Ignora registros cuyo nombre ya existe
  */
 void cargarSitiosDesdeArchivo(AppData *app, const char *ruta);
@@ -41,7 +41,7 @@ void cargarSitiosDesdeArchivo(AppData *app, const char *ruta);
  * Objetivo:    Solicitar al usuario la ruta de un archivo CSV
  *              e importar los sitios desde ese archivo.
  * Entrada:     app - puntero a AppData
- * Salida:      void (modifica app->sitios por referencia)
+ * Salida:      nada (modifica app->sitios por referencia)
  * Restriccion: Ignora registros cuyo nombre ya existe
  */
 void cargarSitiosDesdeArchivoConRuta(AppData *app);
@@ -66,11 +66,19 @@ SitioEvento *buscarSitioPorNombre(const AppData *app, const char *nombre);
 SitioEvento *seleccionarSitio(const AppData *app);
 
 /*
+ * ValidarNombreSitio
+ * Objetivo:    Validar formato de nombre ingresado para un sitio.
+ * Entrada:     nombre - string a validar
+ * Salida:      nada (imprime mensajes/validaciones)
+ */
+void ValidarNombreSitio(const char *nombre);
+
+/*
  * eliminarSitio
  * Objetivo:    Mostrar lista numerada, pedir indice y eliminar
  *              el sitio seleccionado de memoria y del archivo.
  * Entrada:     app - puntero a AppData
- * Salida:      void (modifica app->sitios y reescribe archivo)
+ * Salida:      nada (modifica app->sitios y reescribe archivo)
  */
 void eliminarSitio(AppData *app);
 

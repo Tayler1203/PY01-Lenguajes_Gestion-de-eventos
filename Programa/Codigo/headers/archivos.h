@@ -23,8 +23,8 @@ void liberarApp(AppData *app);
 /*
  * asegurarDirectorioDatos
  * Objetivo:    Crear el directorio "datos/" si no existe.
- * Entrada:     void
- * Salida:      void
+ * Entrada:     nada
+ * Salida:      nada
  */
 void asegurarDirectorioDatos();
 
@@ -33,7 +33,7 @@ void asegurarDirectorioDatos();
  * Objetivo:    Leer sitios, eventos y facturas desde archivos
  *              txt al inicio del programa.
  * Entrada:     app - puntero a AppData
- * Salida:      void (llena los arreglos en app por referencia)
+ * Salida:      nada (llena los arreglos en app por referencia)
  */
 void cargarDatos(AppData *app);
 
@@ -42,7 +42,7 @@ void cargarDatos(AppData *app);
  * Objetivo:    Escribir toda la informacion en memoria a los
  *              archivos txt antes de salir.
  * Entrada:     app - puntero a AppData
- * Salida:      void
+ * Salida:      nada
  * Restriccion: Sobreescribe los archivos existentes
  */
 void guardarDatos(AppData *app);
@@ -87,7 +87,7 @@ int GuardarEventosEnArchivo(const AppData *app, const Evento *evento);
  * cargarEstadosAsientos
  * Objetivo:    Leer el estado de asientos desde archivo y aplicarlos a eventos.
  * Entrada:     app - puntero a AppData
- * Salida:      void (modifica asientos por referencia)
+ * Salida:      nada (modifica asientos por referencia)
  */
 void cargarEstadosAsientos(AppData *app);
 
@@ -95,7 +95,7 @@ void cargarEstadosAsientos(AppData *app);
  * guardarEstadosAsientos
  * Objetivo:    Guardar el estado actual de todos los asientos de todos los eventos.
  * Entrada:     app - puntero a AppData
- * Salida:      void
+ * Salida:      nada
  */
 void guardarEstadosAsientos(const AppData *app);
 
@@ -103,7 +103,7 @@ void guardarEstadosAsientos(const AppData *app);
  * cargarSectoresDesdeArchivo
  * Objetivo:    Leer sectores desde archivo y asignarlos a los sitios.
  * Entrada:     app - puntero a AppData
- * Salida:      void (modifica sitios por referencia)
+ * Salida:      nada (modifica sitios por referencia)
  */
 void cargarSectoresDesdeArchivo(AppData *app);
 
@@ -111,7 +111,7 @@ void cargarSectoresDesdeArchivo(AppData *app);
  * cargarFacturasDesdeArchivo
  * Objetivo:    Leer facturas desde archivo y cargarlas en memoria.
  * Entrada:     app - puntero a AppData
- * Salida:      void (modifica app->facturas y app->cantidadFacturas)
+ * Salida:      nada (modifica app->facturas y app->cantidadFacturas)
  */
 void cargarFacturasDesdeArchivo(AppData *app);
 
@@ -119,7 +119,7 @@ void cargarFacturasDesdeArchivo(AppData *app);
  * guardarFacturasEnArchivo
  * Objetivo:    Escribir todas las facturas en memoria al archivo.
  * Entrada:     app - puntero a AppData
- * Salida:      void
+ * Salida:      nada
  */
 void guardarFacturasEnArchivo(const AppData *app);
 
@@ -127,7 +127,7 @@ void guardarFacturasEnArchivo(const AppData *app);
  * agregarFacturaAlArchivo
  * Objetivo:    Agregar una factura individual al archivo (append).
  * Entrada:     factura - puntero a la factura a guardar
- * Salida:      void
+ * Salida:      nada
  */
 void agregarFacturaAlArchivo(const Factura *factura);
 
@@ -137,7 +137,7 @@ void cargarEventosDesdeArchivo(AppData *app);
  * guardarSectoresEnArchivo
  * Objetivo:    Guardar todos los sectores de todos los sitios.
  * Entrada:     app - puntero a AppData
- * Salida:      void
+ * Salida:      nada
  */
 void guardarSectoresEnArchivo(const AppData *app);
 
@@ -145,8 +145,8 @@ void guardarSectoresEnArchivo(const AppData *app);
  * limpiarBufferEntrada
  * Objetivo:    Limpiar el buffer de entrada stdin eliminando
  *              caracteres residuales del ultima lectura.
- * Entrada:     void
- * Salida:      void
+ * Entrada:     nada
+ * Salida:      nada
  */
 void limpiarBufferEntrada(void);
 
