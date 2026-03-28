@@ -107,7 +107,7 @@ void agregarSector(SitioEvento *sitio) {
 			numAsientos = 1;
 		}
 
-		sector->inicial = Letras[i];
+		sector->inicial = Letras[sitio->cantidadSectores + i];
 		sector->cantidadEspacios = numAsientos;
 		sector->asientos = NULL;
 

@@ -1,0 +1,5 @@
+ArenaCentral,SanJose,arenacentral.cr
+TeatroLuz,Heredia,teatroluz.cr
+ColiseoPacifica,Alajuela,coliseopacifica.cr
+ParqueVivo,Cartago,parquevivo.cr
+EstadioValle,SanRamon,estadiovalle.cr

@@ -1,3 +1,0 @@
-Wacamole,PLATINO,A,5
-Wacamole,DIAMANTE,B,6
-Wacamole,POBRE,C,5

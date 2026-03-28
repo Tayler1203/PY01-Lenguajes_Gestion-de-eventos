@@ -21,7 +21,9 @@ int mostrarMenuPrincipal() {
 }
 
 int mostrarMenuGestion() {
-	printf("\n######## MENU ADMINISTRATIVO ########\n");
+	printf("\n====================================\n");
+	printf("        MENU ADMINISTRATIVO\n");
+	printf("====================================\n");
 	printf("1. Gestion de sitios de eventos\n");
 	printf("2. Gestion de espacios y sectores de sitios de eventos\n");
 	printf("3. Gestion de eventos\n");
@@ -36,7 +38,9 @@ int mostrarMenuGestion() {
 }
 
 int mostrarMenuUsuarios() {
-	printf("\n######### MENU GENERAL #########\n");
+	printf("\n====================================\n");
+	printf("           MENU GENERAL\n");
+	printf("====================================\n");
 	printf("1. Consulta por evento\n");
 	printf("2. Compra de boletos\n");
 	printf("3. Volver\n");
@@ -47,7 +51,9 @@ int mostrarMenuUsuarios() {
 }
 
 int mostrarMenuSitios() {
-	printf("\n#### GESTION DE SITIOS DE EVENTOS ####\n");
+	printf("\n====================================\n");
+	printf("   GESTION DE SITIOS DE EVENTOS\n");
+	printf("====================================\n");
 	printf("1. Cargar en lote desde archivo\n");
 	printf("2. Ver sitios de eventos\n");
 	printf("3. Registrar sitio manual\n");
@@ -61,7 +67,9 @@ int mostrarMenuSitios() {
 }
 
 int mostrarMenuEspacios() {
-	printf("\n### GESTION DE ESPACIOS DE LOS SITIOS ###\n");
+	printf("\n====================================\n");
+	printf(" GESTION DE ESPACIOS DE LOS SITIOS\n");
+	printf("====================================\n");
 	printf("1. Mostrar sitios con sectores y asientos\n");
 	printf("2. Seleccionar sitio para administrar\n");
 	printf("3. Agregar sector a un sitio\n");
@@ -74,7 +82,9 @@ int mostrarMenuEspacios() {
 }
 
 int mostrarMenuEventos() {
-	printf("\n######## GESTION DE EVENTOS ########\n");
+	printf("\n====================================\n");
+	printf("        GESTION DE EVENTOS\n");
+	printf("====================================\n");
 	printf("1. Crear evento\n");
 	printf("2. Ver eventos\n");
 	printf("3. Consultar evento\n");
@@ -86,7 +96,9 @@ int mostrarMenuEventos() {
 }
 
 int mostrarMenuEstadoEvento() {
-	printf("\n######## ESTADO DE EVENTO #########\n");
+	printf("\n====================================\n");
+	printf("         ESTADO DE EVENTO\n");
+	printf("====================================\n");
 	printf("1. Seleccionar evento y ver resumen\n");
 	printf("2. Ver recaudacion por sector\n");
 	printf("3. Ver estado de asientos por sector\n");
@@ -98,7 +110,9 @@ int mostrarMenuEstadoEvento() {
 }
 
 int mostrarMenuFacturas() {
-	printf("\n######## LISTA DE FACTURAS ########\n");
+	printf("\n====================================\n");
+	printf("        LISTA DE FACTURAS\n");
+	printf("====================================\n");
 	printf("1. Mostrar todas las facturas\n");
 	printf("2. Ver detalle de factura\n");
 	printf("3. Volver\n");
@@ -109,7 +123,9 @@ int mostrarMenuFacturas() {
 }
 
 int mostrarMenuEstadisticas() {
-	printf("\n######### ESTADISTICAS #########\n");
+	printf("\n====================================\n");
+	printf("           ESTADISTICAS\n");
+	printf("====================================\n");
 	printf("1. Top 3 mes-año con mas eventos\n");
 	printf("2. Top 3 productoras por recaudacion\n");
 	printf("3. Sitios con eventos y total recaudado\n");
